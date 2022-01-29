@@ -1,10 +1,8 @@
 ﻿using FitAppServer.DataAccess;
 using FitAppServer.DataAccess.Entites;
 using Microsoft.EntityFrameworkCore;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace FitAppServer.Services
@@ -12,10 +10,12 @@ namespace FitAppServer.Services
     public class WorkoutsService : IWorkoutsService
     {
         private readonly FitAppContext _context;
+
         public WorkoutsService(FitAppContext context)
         {
             _context = context;
         }
+
         public async Task<List<Workout>> GetByUserIDAsync(string userid)
         {
             return await _context.Workouts
@@ -54,11 +54,13 @@ namespace FitAppServer.Services
                         set.ID = 0;
                     }
                 }
+
                 if (ex.ID < 0)
                 {
                     ex.ID = 0;
                 }
             }
+
             // Check if this is a new workout
             if (workout.ID <= 0)
             {
@@ -71,9 +73,7 @@ namespace FitAppServer.Services
                 _context.Update(workout);
 
                 // Remove all exercises and sets that are missing in the payload
-                // Get all IDs from the payload before Entity Framework populates the Sets when searching for all existing exercises
-
-                // Ignore exercises that are being added
+                // Get all IDs from the payload before Entity Framework populates it when searching for all existing exercises
                 var exIds = workout.Exercises.Select(q => q.ID).ToList();
 
                 var setsIds = new List<int>();
@@ -84,7 +84,8 @@ namespace FitAppServer.Services
                 }
 
                 // Load all exercises in this workout at once
-                var allExistingExercises = await _context.Exercises.Where(q => q.Workout.ID == workout.ID).Include(q => q.Sets).ToListAsync();
+                var allExistingExercises = await _context.Exercises.Where(q => q.Workout.ID == workout.ID)
+                    .Include(q => q.Sets).ToListAsync();
 
                 // Get exercises that are missing from the payload
                 var missingExercises = allExistingExercises.Where(q => !exIds.Contains(q.ID));
@@ -96,6 +97,7 @@ namespace FitAppServer.Services
                 var missingSets = allExistingSets.Where(q => !setsIds.Contains(q.ID)).ToList();
                 _context.Sets.RemoveRange(missingSets);
             }
+
             await _context.SaveChangesAsync();
             return workout;
         }
@@ -113,4 +115,3 @@ namespace FitAppServer.Services
         }
     }
 }
-

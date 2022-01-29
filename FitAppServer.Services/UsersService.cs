@@ -5,6 +5,8 @@ using FitAppServer.Services.DTOs.Users;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Threading.Tasks;
+using FitAppServer.Services.Models;
+using AuthErrorCode = FitAppServer.Services.Models.AuthErrorCode;
 
 namespace FitAppServer.Services
 {
@@ -21,19 +23,13 @@ namespace FitAppServer.Services
             return await _context.Users.AsNoTracking().FirstOrDefaultAsync(q => q.Uuid == userid);
         }
 
+        public async Task<User> GetByUsernameOrEmail(string username, string email)
+        {
+            return await _context.Users.FirstOrDefaultAsync(q => q.Username == username || q.Email == email);
+        }
+
         public async Task<UserRegisterResult> RegisterUserAsync(NewUser user)
         {
-            var existingUser = _context.Users.FirstOrDefault(q => q.Username == user.Username);
-
-            // Check if user does not exist already
-            if (existingUser != null)
-            {
-                return new UserRegisterResult
-                {
-                    ErrorCode = AuthErrorCode.EmailAlreadyExists
-                };
-            }
-
             // New Firebase user
             var newUser = new UserRecordArgs
             {
@@ -64,22 +60,15 @@ namespace FitAppServer.Services
                 return new UserRegisterResult
                 {
                     ID = userRecord.Uid,
-                    SignInToken = token
+                    SignInToken = token,
+                    ErrorCode = AuthErrorCode.None
                 };
             }
-            catch (FirebaseAuthException e)
+            catch (FirebaseAuthException)
             {
-                if (e.AuthErrorCode == null)
-                {
-                    return new UserRegisterResult
-                    {
-                        ErrorCode = AuthErrorCode.UnexpectedResponse
-                    };
-                }
-
                 return new UserRegisterResult
                 {
-                    ErrorCode = (AuthErrorCode)e.AuthErrorCode
+                    ErrorCode = AuthErrorCode.GenericError
                 };
             }
         }

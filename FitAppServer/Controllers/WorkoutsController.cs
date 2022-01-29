@@ -1,11 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using FitAppServer.Services;
 using System.Threading.Tasks;
 using FitAppServer.DTOs.Workouts;
-using FitAppServer.DataAccess.Entites;
 using FitAppServer.Mappings;
 using Microsoft.AspNetCore.Authorization;
 
@@ -15,20 +13,20 @@ namespace FitAppServer.Controllers
     [Route("workouts")]
     public class WorkoutsController : ControllerBase
     {
-        private readonly IWorkoutsService _serivce;
+        private readonly IWorkoutsService _service;
         private readonly IUsersService _usersService;
         public WorkoutsController(IWorkoutsService service, IUsersService usersService)
         {
-            _serivce = service;
+            _service = service;
             _usersService = usersService;
         }
 
         [HttpGet]
         [Route("descriptions/{userid}")]
         [Authorize]
-        public async Task<IActionResult> GetByUserID(string userid)
+        public async Task<IActionResult> GetByUserId(string userid)
         {
-            var workouts = await _serivce.GetByUserIDAsync(userid);
+            var workouts = await _service.GetByUserIDAsync(userid);
 
             var result = new List<WorkoutDescription>();
 
@@ -54,22 +52,22 @@ namespace FitAppServer.Controllers
         {
             // Compare userid to Token userid here
             // if userid == userid from token => continue
-            var claimsUserId = User.Claims.Where(q => q.Type == "user_id").Single().Value;
+            var claimsUserId = User.Claims.Single(q => q.Type == "user_id").Value;
 
             var wrk = workout.FromDTO();
             var user = await _usersService.GetUser(claimsUserId);
 
             if (user == null)
             {
-                return BadRequest();
+                return BadRequest("Could not find the user");
             }
 
             wrk.User = user;
 
-            // Onbly check if this workout is being updated and not added
+            // Only check if this workout is being updated and not added
             if (wrk.ID > 0)
             {
-                var existingWorkout = await _serivce.GetByWorkoutIDAsync(wrk.ID);
+                var existingWorkout = await _service.GetByWorkoutIDAsync(wrk.ID);
 
                 if (existingWorkout == null)
                 {
@@ -98,7 +96,7 @@ namespace FitAppServer.Controllers
                         // Check if each set being updated belongs to this exercise
                         foreach (var set in ex.Sets)
                         {
-                            // Don't check if this set is being added
+                            // Don't check when this set is being added
                             if (set.ID <= 0)
                             {
                                 continue;
@@ -113,7 +111,7 @@ namespace FitAppServer.Controllers
                 }
             }
 
-            var res = await _serivce.AddOrUpdateWorkout(wrk);
+            var res = await _service.AddOrUpdateWorkout(wrk);
             return Ok(res.ToDTO());
         }
 
@@ -122,7 +120,7 @@ namespace FitAppServer.Controllers
         [Authorize]
         public async Task<IActionResult> GetWorkout(int workoutid)
         {
-            var workout = await _serivce.GetByWorkoutIDAsync(workoutid);
+            var workout = await _service.GetByWorkoutIDAsync(workoutid);
 
             if (workout == null)
             {
@@ -136,7 +134,7 @@ namespace FitAppServer.Controllers
         [Route("{workoutid}")]
         public async Task<IActionResult> DeleteWorkout(int workoutid)
         {
-            await _serivce.DeleteWorkout(workoutid);
+            await _service.DeleteWorkout(workoutid);
 
             return Ok();
         }

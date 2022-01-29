@@ -1,5 +1,4 @@
-﻿using FirebaseAdmin.Auth;
-using System.Collections.Generic;
+﻿using FitAppServer.Services.Models;
 
 namespace FitAppServer.Services.DTOs.Users
 {

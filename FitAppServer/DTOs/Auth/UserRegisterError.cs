@@ -1,13 +1,10 @@
-﻿using FirebaseAdmin.Auth;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using FitAppServer.Services.Models;
 
 namespace FitAppServer.DTOs.Auth
 {
     public class UserRegisterError
     {
+        public string FieldName { get; set; }
         public string ErrorMessage { get; set; }
         public AuthErrorCode ErrorCode { get; set; }
     }

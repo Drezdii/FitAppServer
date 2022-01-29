@@ -10,8 +10,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace FitAppServer.DataAccess.Migrations
 {
     [DbContext(typeof(FitAppContext))]
-    [Migration("20210716152048_workout-date-changes")]
-    partial class workoutdatechanges
+    [Migration("20210913005515_fresh-migration")]
+    partial class freshmigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -140,7 +140,7 @@ namespace FitAppServer.DataAccess.Migrations
             modelBuilder.Entity("FitAppServer.DataAccess.Entites.Exercise", b =>
                 {
                     b.HasOne("FitAppServer.DataAccess.Entites.ExerciseInfo", "ExerciseInfo")
-                        .WithMany()
+                        .WithMany("Exercises")
                         .HasForeignKey("ExerciseInfoID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -181,6 +181,11 @@ namespace FitAppServer.DataAccess.Migrations
             modelBuilder.Entity("FitAppServer.DataAccess.Entites.Exercise", b =>
                 {
                     b.Navigation("Sets");
+                });
+
+            modelBuilder.Entity("FitAppServer.DataAccess.Entites.ExerciseInfo", b =>
+                {
+                    b.Navigation("Exercises");
                 });
 
             modelBuilder.Entity("FitAppServer.DataAccess.Entites.User", b =>
