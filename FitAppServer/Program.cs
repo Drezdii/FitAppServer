@@ -1,21 +1,55 @@
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Hosting;
+using System;
+using FitAppServer.DataAccess;
+using FitAppServer.DataAccess.Entities;
+using FitAppServer.Resolvers;
+using FitAppServer.Services;
+using FitAppServer.Types;
+using HotChocolate.Types;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 
-namespace FitAppServer
+var builder = WebApplication.CreateBuilder(args);
+
+// builder.Services.AddDbContext<FitAppContext>(options =>
+//     options.UseNpgsql(builder.Configuration.GetConnectionString("postgres")));
+
+builder.Services.AddAuthorization();
+builder.Services.AddAuthentication();
+
+builder.Services.AddPooledDbContextFactory<FitAppContext>(options =>
+    options.UseNpgsql(builder.Configuration.GetConnectionString("postgres")));
+
+builder.Services.AddTransient<IWorkoutsService, WorkoutsService>();
+
+// builder.Services
+//     .AddGraphQLServer()
+//     .AddQueryType<Query>();
+
+builder.Services
+    .AddGraphQLServer()
+    .AddDocumentFromFile("schema.graphql")
+    // .BindRuntimeType<Query>()
+    // .BindRuntimeType<WorkoutType>()
+    .AddResolver<WorkoutsResolver>("WorkoutType")
+    .AddResolver<WorkoutsResolver>("Query");
+
+var app = builder.Build();
+
+app.UseForwardedHeaders(new ForwardedHeadersOptions
 {
-    public class Program
-    {
-        public static void Main(string[] args)
-        {
-            CreateHostBuilder(args).Build().Run();
-        }
+    ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+});
 
-        public static IHostBuilder CreateHostBuilder(string[] args) =>
-            Host.CreateDefaultBuilder(args)
-                .ConfigureWebHostDefaults(webBuilder =>
-                {
-                    webBuilder.UseStartup<Startup>();
-                    webBuilder.UseKestrel();
-                });
-    }
-}
+app.UseAuthentication();
+app.UseRouting();
+app.UseAuthorization();
+
+// app.MapControllers();
+
+app.MapGraphQL();
+
+app.Run();

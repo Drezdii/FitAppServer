@@ -1,6 +1,6 @@
 ﻿using FirebaseAdmin.Auth;
 using FitAppServer.DataAccess;
-using FitAppServer.DataAccess.Entites;
+using FitAppServer.DataAccess.Entities;
 using FitAppServer.Services.DTOs.Users;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
@@ -13,17 +13,18 @@ namespace FitAppServer.Services
     public class UsersService : IUsersService
     {
         private readonly FitAppContext _context;
-        public UsersService(FitAppContext context)
+
+        public UsersService(IDbContextFactory<FitAppContext> context)
         {
-            _context = context;
+            _context = context.CreateDbContext();
         }
 
-        public async Task<User> GetUser(string userid)
+        public async Task<User?> GetUser(string userid)
         {
             return await _context.Users.AsNoTracking().FirstOrDefaultAsync(q => q.Uuid == userid);
         }
 
-        public async Task<User> GetByUsernameOrEmail(string username, string email)
+        public async Task<User?> GetByUsernameOrEmail(string username, string email)
         {
             return await _context.Users.FirstOrDefaultAsync(q => q.Username == username || q.Email == email);
         }

@@ -1,10 +1,9 @@
-﻿using FitAppServer.Models.Auth;
-using FitAppServer.Services.DTOs.Users;
+﻿using FitAppServer.Services.DTOs.Users;
 using FitAppServer.Services;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
-using FitAppServer.DTOs.Auth;
 using System.Collections.Generic;
+using FitAppServer.Auth.DTOs;
 using FitAppServer.Services.Models;
 
 namespace FitAppServer.Controllers
@@ -29,7 +28,7 @@ namespace FitAppServer.Controllers
 
         [HttpPost]
         [Route("")]
-        public async Task<IActionResult> RegisterAsync(UserRegister user)
+        public async Task<IActionResult> RegisterAsync(UserRegisterRequest user)
         {
             var errors = new List<UserRegisterError>();
 
@@ -115,17 +114,14 @@ namespace FitAppServer.Controllers
 
             var res = await _service.RegisterUserAsync(usr);
 
-            // We check for other errors in the code above
-            switch (res.ErrorCode)
+            if (res.ErrorCode == AuthErrorCode.GenericError)
             {
-                case AuthErrorCode.GenericError:
-                    errors.Add(new UserRegisterError
-                    {
-                        FieldName = "general",
-                        ErrorMessage = "An error has occurred.",
-                        ErrorCode = res.ErrorCode
-                    });
-                    break;
+                errors.Add(new UserRegisterError
+                {
+                    FieldName = "general",
+                    ErrorMessage = "An error has occurred.",
+                    ErrorCode = res.ErrorCode
+                });
             }
 
             if (errors.Count > 0)

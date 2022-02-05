@@ -1,6 +1,6 @@
-﻿namespace FitAppServer.Services.DTOs.Users
+﻿namespace FitAppServer.Auth.DTOs
 {
-    public class NewUser
+    public class UserRegisterRequest
     {
         public string Username { get; set; } = null!;
         public string Email { get; set; } = null!;

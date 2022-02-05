@@ -1,6 +1,6 @@
-﻿namespace FitAppServer.DataAccess.Entites
+﻿namespace FitAppServer.DataAccess.Entities
 {
-    public enum WorkoutType
+    public enum WorkoutTypeCode
     {
         None = 0,
         Push,

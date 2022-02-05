@@ -1,0 +1,33 @@
+﻿schema {
+    query: Query
+}
+
+type Query {
+    workout(id: ID!) : WorkoutType!
+    userWorkouts(userid: ID!) : [WorkoutType]!
+}
+
+type WorkoutType {
+    id: ID!
+    date: Date!
+    startDate: DateTime
+    endDate: DateTime
+    type: WorkoutTypeCode!
+    exercises: [ExerciseType]!
+}
+
+type ExerciseType {
+    id: ID!
+    exerciseInfoId: Int!
+}
+
+enum WorkoutTypeCode {
+    NONE
+    PUSH
+    PULL
+    LEGS
+    FULL_BODY
+}
+
+scalar DateTime
+scalar Date

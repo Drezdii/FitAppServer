@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FitAppServer.Services", "Fi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FitAppServer.DataAccess", "FitAppServer.DataAccess\FitAppServer.DataAccess.csproj", "{966F1286-D883-4317-917E-341CB3134234}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FitAppServer.Auth", "FitAppServer.Auth\FitAppServer.Auth.csproj", "{56741D70-7DCD-4340-BDA6-BE31218D6C13}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{966F1286-D883-4317-917E-341CB3134234}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{966F1286-D883-4317-917E-341CB3134234}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{966F1286-D883-4317-917E-341CB3134234}.Release|Any CPU.Build.0 = Release|Any CPU
+		{56741D70-7DCD-4340-BDA6-BE31218D6C13}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{56741D70-7DCD-4340-BDA6-BE31218D6C13}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{56741D70-7DCD-4340-BDA6-BE31218D6C13}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{56741D70-7DCD-4340-BDA6-BE31218D6C13}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

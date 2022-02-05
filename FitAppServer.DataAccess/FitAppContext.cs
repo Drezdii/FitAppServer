@@ -1,15 +1,15 @@
-﻿using FitAppServer.DataAccess.Entites;
+﻿using FitAppServer.DataAccess.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace FitAppServer.DataAccess
 {
     public class FitAppContext : DbContext
     {
-        public DbSet<User> Users { get; set; }
-        public DbSet<Workout> Workouts { get; set; }
-        public DbSet<Exercise> Exercises { get; set; }
-        public DbSet<ExerciseInfo> ExerciseInfo { get; set; }
-        public DbSet<Set> Sets { get; set; }
+        public DbSet<User> Users { get; set; } = null!;
+        public DbSet<Workout> Workouts { get; set; } = null!;
+        public DbSet<Exercise> Exercises { get; set; } = null!;
+        public DbSet<ExerciseInfo> ExerciseInfo { get; set; } = null!;
+        public DbSet<Set> Sets { get; set; } = null!;
 
         public FitAppContext(DbContextOptions options) : base(options)
         {
@@ -18,24 +18,24 @@ namespace FitAppServer.DataAccess
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<User>()
-                .HasMany<Workout>(u => u.Workouts)
+                .HasMany(u => u.Workouts)
                 .WithOne(w => w.User)
-                .IsRequired(true);
+                .IsRequired();
 
             modelBuilder.Entity<Workout>()
-                .HasMany<Exercise>(w => w.Exercises)
+                .HasMany(w => w.Exercises)
                 .WithOne(e => e.Workout)
-                .IsRequired(true);
+                .IsRequired();
 
             modelBuilder.Entity<Exercise>()
-                .HasOne<ExerciseInfo>(q => q.ExerciseInfo)
+                .HasOne(e => e.ExerciseInfo)
                 .WithMany(q => q.Exercises)
-                .IsRequired(true);
+                .IsRequired();
 
             modelBuilder.Entity<Exercise>()
-                .HasMany<Set>(s => s.Sets)
-                .WithOne(q => q.Exercise)
-                .IsRequired(true);
+                .HasMany(e => e.Sets)
+                .WithOne(s => s.Exercise)
+                .IsRequired();
         }
     }
 }

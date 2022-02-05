@@ -1,4 +1,4 @@
-﻿using FitAppServer.DataAccess.Entites;
+﻿using FitAppServer.DataAccess.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,10 +9,11 @@ namespace FitAppServer.Services
 {
     public interface IWorkoutsService
     {
-        Task<List<Workout>> GetByUserIDAsync(string userid);
-        Task<Workout> GetByWorkoutIDAsync(int workoutid);
-        Task<Workout> AddOrUpdateWorkout(Workout workout);
+        Task<List<Workout>> GetByUserIdAsync(string userid);
+        Task<Workout?> GetByWorkoutIdAsync(int workoutid);
+        Task<ICollection<Exercise>> GetExercisesByWorkoutIdsAsync(ICollection<int> ids);
+        Task<Workout> AddOrUpdateWorkoutAsync(Workout workout);
 
-        Task DeleteWorkout(int workoutid);
+        Task DeleteWorkoutAsync(int workoutid);
     }
 }
