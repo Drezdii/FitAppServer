@@ -20,7 +20,7 @@ namespace FitAppServer.Controllers
         }
 
         [HttpGet]
-        [Route("", Name = "GetUser")]
+        [Route("", Name = "GetUserAsync")]
         public async Task<IActionResult> GetUserAsync(int id)
         {
             return Ok();
@@ -72,7 +72,7 @@ namespace FitAppServer.Controllers
                 });
             }
 
-            var existingUser = await _service.GetByUsernameOrEmail(user.Username, user.Email);
+            var existingUser = await _service.GetByUsernameOrEmailAsync(user.Username, user.Email);
 
             // Check if user does not exist already
             if (existingUser != null)
@@ -130,7 +130,7 @@ namespace FitAppServer.Controllers
             }
 
 
-            return CreatedAtRoute("GetUser", new
+            return CreatedAtRoute("GetUserAsync", new
             {
                 id = res.ID
             }, new

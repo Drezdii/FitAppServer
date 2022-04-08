@@ -9,7 +9,6 @@ namespace FitAppServer.DataAccess.Entities
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
-        // [Column(TypeName = "date")] 
         public DateOnly Date { get; set; }
         public DateTime? StartDate { get; set; }
         public DateTime? EndDate { get; set; }

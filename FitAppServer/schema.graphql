@@ -1,32 +1,68 @@
 ﻿schema {
     query: Query
+    mutation: Mutation
 }
 
 type Query {
-    workout(id: ID!) : WorkoutType!
-    userWorkouts(userid: ID!) : [WorkoutType]!
+    workout(id: ID!) : WorkoutType
+    userWorkouts : [WorkoutType!]!
 }
 
-type WorkoutType {
+type Mutation {
+    deleteWorkout(id: ID!) : ID
+    saveWorkout(workout: WorkoutInput!) : WorkoutType!
+}
+
+input WorkoutInput {
     id: ID!
     date: Date!
     startDate: DateTime
     endDate: DateTime
     type: WorkoutTypeCode!
-    exercises: [ExerciseType]!
+    exercises: [ExerciseInput!]!
+}
+
+input ExerciseInput {
+    id: ID!
+    exerciseInfoId: Int!
+    sets: [SetInput!]!
+}
+
+input SetInput {
+    id: ID!
+    reps: Int!
+    weight: Float!
+    completed: Boolean!
+}
+
+type WorkoutType  {
+    id: ID!
+    date: Date!
+    startDate: DateTime
+    endDate: DateTime
+    type: WorkoutTypeCode!
+    exercises: [ExerciseType!]!
 }
 
 type ExerciseType {
     id: ID!
     exerciseInfoId: Int!
+    sets: [SetType!]!
+}
+
+type SetType{
+    id: ID!
+    reps: Int!
+    weight: Float!
+    completed: Boolean!
 }
 
 enum WorkoutTypeCode {
     NONE
-    PUSH
-    PULL
-    LEGS
-    FULL_BODY
+    DEADLIFT
+    BENCH
+    SQUAT
+    OHP
 }
 
 scalar DateTime

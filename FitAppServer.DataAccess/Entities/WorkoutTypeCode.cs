@@ -3,9 +3,9 @@
     public enum WorkoutTypeCode
     {
         None = 0,
-        Push,
-        Pull,
-        Legs,
-        FullBody
+        Deadlift,
+        Bench,
+        Squat,
+        Ohp
     }
 }

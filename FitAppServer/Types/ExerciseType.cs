@@ -1,4 +1,6 @@
-﻿namespace FitAppServer.Types;
+﻿using System.Collections.Generic;
+
+namespace FitAppServer.Types;
 
 public class ExerciseType
 {
@@ -8,5 +10,5 @@ public class ExerciseType
     public int ExerciseInfoId { get; set; }
 
     public int WorkoutId { get; set; }
-    // public List<Set> Sets { get; set; } = null!;
+    public List<SetType> Sets { get; set; } = null!;
 }

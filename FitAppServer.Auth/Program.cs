@@ -9,11 +9,11 @@ using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddDbContext<FitAppContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("postgres")));
-
 builder.Services.AddTransient<IUsersService, UsersService>();
 builder.Services.AddTransient<IWorkoutsService, WorkoutsService>();
+
+builder.Services.AddPooledDbContextFactory<FitAppContext>(options =>
+    options.UseNpgsql(builder.Configuration.GetConnectionString("postgres")));
 
 FirebaseApp.Create(new AppOptions
 {

@@ -1,4 +1,5 @@
-﻿using FirebaseAdmin.Auth;
+﻿using System;
+using FirebaseAdmin.Auth;
 using FitAppServer.DataAccess;
 using FitAppServer.DataAccess.Entities;
 using FitAppServer.Services.DTOs.Users;
@@ -10,7 +11,7 @@ using AuthErrorCode = FitAppServer.Services.Models.AuthErrorCode;
 
 namespace FitAppServer.Services
 {
-    public class UsersService : IUsersService
+    public class UsersService : IUsersService, IAsyncDisposable
     {
         private readonly FitAppContext _context;
 
@@ -19,12 +20,12 @@ namespace FitAppServer.Services
             _context = context.CreateDbContext();
         }
 
-        public async Task<User?> GetUser(string userid)
+        public async Task<User?> GetUserAsync(string userid)
         {
             return await _context.Users.AsNoTracking().FirstOrDefaultAsync(q => q.Uuid == userid);
         }
 
-        public async Task<User?> GetByUsernameOrEmail(string username, string email)
+        public async Task<User?> GetByUsernameOrEmailAsync(string username, string email)
         {
             return await _context.Users.FirstOrDefaultAsync(q => q.Username == username || q.Email == email);
         }
@@ -72,6 +73,11 @@ namespace FitAppServer.Services
                     ErrorCode = AuthErrorCode.GenericError
                 };
             }
+        }
+
+        public ValueTask DisposeAsync()
+        {
+            return _context.DisposeAsync();
         }
     }
 }
