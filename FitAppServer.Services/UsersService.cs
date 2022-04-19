@@ -9,75 +9,74 @@ using System.Threading.Tasks;
 using FitAppServer.Services.Models;
 using AuthErrorCode = FitAppServer.Services.Models.AuthErrorCode;
 
-namespace FitAppServer.Services
+namespace FitAppServer.Services;
+
+public class UsersService : IUsersService, IAsyncDisposable
 {
-    public class UsersService : IUsersService, IAsyncDisposable
+    private readonly FitAppContext _context;
+
+    public UsersService(IDbContextFactory<FitAppContext> context)
     {
-        private readonly FitAppContext _context;
+        _context = context.CreateDbContext();
+    }
 
-        public UsersService(IDbContextFactory<FitAppContext> context)
-        {
-            _context = context.CreateDbContext();
-        }
+    public async Task<User?> GetUserAsync(string userid)
+    {
+        return await _context.Users.AsNoTracking().FirstOrDefaultAsync(q => q.Uuid == userid);
+    }
 
-        public async Task<User?> GetUserAsync(string userid)
-        {
-            return await _context.Users.AsNoTracking().FirstOrDefaultAsync(q => q.Uuid == userid);
-        }
+    public async Task<User?> GetByUsernameOrEmailAsync(string username, string email)
+    {
+        return await _context.Users.FirstOrDefaultAsync(q => q.Username == username || q.Email == email);
+    }
 
-        public async Task<User?> GetByUsernameOrEmailAsync(string username, string email)
+    public async Task<UserRegisterResult> RegisterUserAsync(NewUser user)
+    {
+        // New Firebase user
+        var newUser = new UserRecordArgs
         {
-            return await _context.Users.FirstOrDefaultAsync(q => q.Username == username || q.Email == email);
-        }
+            DisplayName = user.Username,
+            Email = user.Email,
+            EmailVerified = true,
+            Password = user.Password
+        };
 
-        public async Task<UserRegisterResult> RegisterUserAsync(NewUser user)
+        try
         {
-            // New Firebase user
-            var newUser = new UserRecordArgs
+            // Save the user to the Firebase Auth DB
+            var userRecord = await FirebaseAuth.DefaultInstance.CreateUserAsync(newUser);
+
+            var dbUser = new User
             {
-                DisplayName = user.Username,
-                Email = user.Email,
-                EmailVerified = true,
-                Password = user.Password
+                Uuid = userRecord.Uid,
+                Username = userRecord.DisplayName,
+                Email = userRecord.Email
             };
 
-            try
+            // Save the user to the DB
+            _context.Users.Add(dbUser);
+            await _context.SaveChangesAsync();
+
+            var token = await FirebaseAuth.DefaultInstance.CreateCustomTokenAsync(userRecord.Uid);
+
+            return new UserRegisterResult
             {
-                // Save the user to the Firebase Auth DB
-                var userRecord = await FirebaseAuth.DefaultInstance.CreateUserAsync(newUser);
-
-                var dbUser = new User
-                {
-                    Uuid = userRecord.Uid,
-                    Username = userRecord.DisplayName,
-                    Email = userRecord.Email
-                };
-
-                // Save the user to the DB
-                _context.Users.Add(dbUser);
-                await _context.SaveChangesAsync();
-
-                var token = await FirebaseAuth.DefaultInstance.CreateCustomTokenAsync(userRecord.Uid);
-
-                return new UserRegisterResult
-                {
-                    ID = userRecord.Uid,
-                    SignInToken = token,
-                    ErrorCode = AuthErrorCode.None
-                };
-            }
-            catch (FirebaseAuthException)
-            {
-                return new UserRegisterResult
-                {
-                    ErrorCode = AuthErrorCode.GenericError
-                };
-            }
+                ID = userRecord.Uid,
+                SignInToken = token,
+                ErrorCode = AuthErrorCode.None
+            };
         }
-
-        public ValueTask DisposeAsync()
+        catch (FirebaseAuthException)
         {
-            return _context.DisposeAsync();
+            return new UserRegisterResult
+            {
+                ErrorCode = AuthErrorCode.GenericError
+            };
         }
+    }
+
+    public ValueTask DisposeAsync()
+    {
+        return _context.DisposeAsync();
     }
 }

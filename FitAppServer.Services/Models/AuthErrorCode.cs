@@ -1,14 +1,13 @@
-﻿namespace FitAppServer.Services.Models
+﻿namespace FitAppServer.Services.Models;
+
+public enum AuthErrorCode
 {
-    public enum AuthErrorCode
-    {
-        GenericError,
-        EmailAlreadyExists,
-        PasswordsNotEqual,
-        InvalidEmail,
-        UsernameTooShort,
-        PasswordTooShort,
-        UsernameAlreadyExists,
-        None
-    }
+    GenericError,
+    EmailAlreadyExists,
+    PasswordsNotEqual,
+    InvalidEmail,
+    UsernameTooShort,
+    PasswordTooShort,
+    UsernameAlreadyExists,
+    None
 }
