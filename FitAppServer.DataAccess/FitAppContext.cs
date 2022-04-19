@@ -10,6 +10,7 @@ namespace FitAppServer.DataAccess
         public DbSet<Exercise> Exercises { get; set; } = null!;
         public DbSet<ExerciseInfo> ExerciseInfo { get; set; } = null!;
         public DbSet<Set> Sets { get; set; } = null!;
+        public DbSet<OneRepMax> OneRepMaxes { get; set; } = null!;
 
         public FitAppContext(DbContextOptions options) : base(options)
         {

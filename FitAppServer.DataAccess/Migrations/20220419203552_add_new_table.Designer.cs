@@ -3,6 +3,7 @@ using System;
 using FitAppServer.DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,10 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace FitAppServer.DataAccess.Migrations
 {
     [DbContext(typeof(FitAppContext))]
-    partial class FitAppContextModelSnapshot : ModelSnapshot
+    [Migration("20220419203552_add_new_table")]
+    partial class add_new_table
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -60,30 +62,6 @@ namespace FitAppServer.DataAccess.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("ExerciseInfo");
-                });
-
-            modelBuilder.Entity("FitAppServer.DataAccess.Entities.OneRepMax", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("Lift")
-                        .HasColumnType("integer");
-
-                    b.Property<float>("Value")
-                        .HasColumnType("real");
-
-                    b.Property<int>("WorkoutId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("WorkoutId");
-
-                    b.ToTable("OneRepMaxes");
                 });
 
             modelBuilder.Entity("FitAppServer.DataAccess.Entities.Set", b =>
@@ -183,17 +161,6 @@ namespace FitAppServer.DataAccess.Migrations
                         .IsRequired();
 
                     b.Navigation("ExerciseInfo");
-
-                    b.Navigation("Workout");
-                });
-
-            modelBuilder.Entity("FitAppServer.DataAccess.Entities.OneRepMax", b =>
-                {
-                    b.HasOne("FitAppServer.DataAccess.Entities.Workout", "Workout")
-                        .WithMany()
-                        .HasForeignKey("WorkoutId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
 
                     b.Navigation("Workout");
                 });

@@ -1,11 +1,10 @@
-﻿namespace FitAppServer.DataAccess.Entities
+﻿namespace FitAppServer.DataAccess.Entities;
+
+public enum WorkoutTypeCode
 {
-    public enum WorkoutTypeCode
-    {
-        None = 0,
-        Deadlift,
-        Bench,
-        Squat,
-        Ohp
-    }
+    None = 0,
+    Deadlift,
+    Bench,
+    Squat,
+    Ohp
 }
