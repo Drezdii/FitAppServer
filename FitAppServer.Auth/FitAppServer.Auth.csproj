@@ -14,5 +14,8 @@
     <ItemGroup>
       <ProjectReference Include="..\FitAppServer.Services\FitAppServer.Services.csproj" />
     </ItemGroup>
+    <ItemGroup>
+      <None Remove=".gitignore" />
+    </ItemGroup>
 
 </Project>

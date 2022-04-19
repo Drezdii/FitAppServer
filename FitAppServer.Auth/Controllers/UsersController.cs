@@ -1,142 +1,139 @@
-﻿using FitAppServer.Services.DTOs.Users;
+﻿using FitAppServer.Auth.DTOs;
 using FitAppServer.Services;
-using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
-using System.Collections.Generic;
-using FitAppServer.Auth.DTOs;
+using FitAppServer.Services.DTOs.Users;
 using FitAppServer.Services.Models;
+using Microsoft.AspNetCore.Mvc;
 
-namespace FitAppServer.Controllers
+namespace FitAppServer.Auth.Controllers;
+
+[ApiController]
+[Route("users")]
+public class UsersController : ControllerBase
 {
-    [ApiController]
-    [Route("users")]
-    public class UsersController : ControllerBase
+    private readonly IUsersService _service;
+
+    public UsersController(IUsersService service)
     {
-        private readonly IUsersService _service;
+        _service = service;
+    }
 
-        public UsersController(IUsersService service)
+    [HttpGet]
+    [Route("", Name = "GetUserAsync")]
+    public async Task<IActionResult> GetUserAsync(int id)
+    {
+        return Ok();
+    }
+
+    [HttpPost]
+    [Route("")]
+    public async Task<IActionResult> RegisterAsync(UserRegisterRequest user)
+    {
+        var errors = new List<UserRegisterError>();
+
+        // Add checks to see if it's an actual email address
+        if (string.IsNullOrEmpty(user.Email))
         {
-            _service = service;
+            errors.Add(new UserRegisterError
+            {
+                FieldName = "email",
+                ErrorMessage = "Email is required.",
+                ErrorCode = AuthErrorCode.InvalidEmail
+            });
         }
 
-        [HttpGet]
-        [Route("", Name = "GetUserAsync")]
-        public async Task<IActionResult> GetUserAsync(int id)
+        if (string.IsNullOrEmpty(user.Username) || user.Username.Length < 3)
         {
-            return Ok();
+            errors.Add(new UserRegisterError
+            {
+                FieldName = "username",
+                ErrorMessage = "Username must have at least 3 characters.",
+                ErrorCode = AuthErrorCode.UsernameTooShort
+            });
         }
 
-        [HttpPost]
-        [Route("")]
-        public async Task<IActionResult> RegisterAsync(UserRegisterRequest user)
+        if (string.IsNullOrEmpty(user.Password) || user.Password.Length < 6)
         {
-            var errors = new List<UserRegisterError>();
+            errors.Add(new UserRegisterError
+            {
+                FieldName = "password",
+                ErrorMessage = "Password must have at least 6 characters.",
+                ErrorCode = AuthErrorCode.PasswordTooShort
+            });
+        }
+        else if (string.IsNullOrEmpty(user.PasswordConfirm) || user.Password != user.PasswordConfirm)
+        {
+            errors.Add(new UserRegisterError
+            {
+                FieldName = "passwordConfirm",
+                ErrorMessage = "Passwords do not match.",
+                ErrorCode = AuthErrorCode.PasswordsNotEqual
+            });
+        }
 
-            // Add checks to see if it's an actual email address
-            if (string.IsNullOrEmpty(user.Email))
+        var existingUser = await _service.GetByUsernameOrEmailAsync(user.Username, user.Email);
+
+        // Check if user does not exist already
+        if (existingUser != null)
+        {
+            if (existingUser.Email == user.Email)
             {
                 errors.Add(new UserRegisterError
                 {
                     FieldName = "email",
-                    ErrorMessage = "Email is required.",
-                    ErrorCode = AuthErrorCode.InvalidEmail
+                    ErrorMessage = "Email already exists.",
+                    ErrorCode = AuthErrorCode.EmailAlreadyExists
                 });
             }
 
-            if (string.IsNullOrEmpty(user.Username) || user.Username.Length < 3)
+            if (existingUser.Username == user.Username)
             {
                 errors.Add(new UserRegisterError
                 {
                     FieldName = "username",
-                    ErrorMessage = "Username must have at least 3 characters.",
-                    ErrorCode = AuthErrorCode.UsernameTooShort
+                    ErrorMessage = "Username is already taken.",
+                    ErrorCode = AuthErrorCode.UsernameAlreadyExists
                 });
             }
+        }
 
-            if (string.IsNullOrEmpty(user.Password) || user.Password.Length < 6)
+        // Return model validation errors
+        if (errors.Count > 0)
+        {
+            return BadRequest(new {errors});
+        }
+
+        var usr = new NewUser
+        {
+            Username = user.Username,
+            Email = user.Email,
+            Password = user.Password,
+            PasswordConfirm = user.PasswordConfirm
+        };
+
+        var res = await _service.RegisterUserAsync(usr);
+
+        if (res.ErrorCode == AuthErrorCode.GenericError)
+        {
+            errors.Add(new UserRegisterError
             {
-                errors.Add(new UserRegisterError
-                {
-                    FieldName = "password",
-                    ErrorMessage = "Password must have at least 6 characters.",
-                    ErrorCode = AuthErrorCode.PasswordTooShort
-                });
-            }
-            else if (string.IsNullOrEmpty(user.PasswordConfirm) || user.Password != user.PasswordConfirm)
-            {
-                errors.Add(new UserRegisterError
-                {
-                    FieldName = "passwordConfirm",
-                    ErrorMessage = "Passwords do not match.",
-                    ErrorCode = AuthErrorCode.PasswordsNotEqual
-                });
-            }
-
-            var existingUser = await _service.GetByUsernameOrEmailAsync(user.Username, user.Email);
-
-            // Check if user does not exist already
-            if (existingUser != null)
-            {
-                if (existingUser.Email == user.Email)
-                {
-                    errors.Add(new UserRegisterError
-                    {
-                        FieldName = "email",
-                        ErrorMessage = "Email already exists.",
-                        ErrorCode = AuthErrorCode.EmailAlreadyExists
-                    });
-                }
-
-                if (existingUser.Username == user.Username)
-                {
-                    errors.Add(new UserRegisterError
-                    {
-                        FieldName = "username",
-                        ErrorMessage = "Username is already taken.",
-                        ErrorCode = AuthErrorCode.UsernameAlreadyExists
-                    });
-                }
-            }
-
-            // Return model validation errors
-            if (errors.Count > 0)
-            {
-                return BadRequest(new {errors});
-            }
-
-            var usr = new NewUser
-            {
-                Username = user.Username,
-                Email = user.Email,
-                Password = user.Password,
-                PasswordConfirm = user.PasswordConfirm
-            };
-
-            var res = await _service.RegisterUserAsync(usr);
-
-            if (res.ErrorCode == AuthErrorCode.GenericError)
-            {
-                errors.Add(new UserRegisterError
-                {
-                    FieldName = "general",
-                    ErrorMessage = "An error has occurred.",
-                    ErrorCode = res.ErrorCode
-                });
-            }
-
-            if (errors.Count > 0)
-            {
-                return BadRequest(new {errors});
-            }
-
-
-            return CreatedAtRoute("GetUserAsync", new
-            {
-                id = res.ID
-            }, new
-            {
-                res.ID, res.SignInToken
+                FieldName = "general",
+                ErrorMessage = "An error has occurred.",
+                ErrorCode = res.ErrorCode
             });
         }
+
+        if (errors.Count > 0)
+        {
+            return BadRequest(new {errors});
+        }
+
+
+        return CreatedAtRoute("GetUserAsync", new
+        {
+            id = res.ID
+        }, new
+        {
+            res.ID, res.SignInToken
+        });
     }
 }
