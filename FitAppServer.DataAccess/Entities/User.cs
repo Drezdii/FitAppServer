@@ -13,4 +13,6 @@ public class User
     [Required] public string Email { get; set; } = null!;
 
     public ICollection<Workout> Workouts { get; set; } = null!;
+
+    public ICollection<OneRepMax> Maxes { get; set; } = null!;
 }

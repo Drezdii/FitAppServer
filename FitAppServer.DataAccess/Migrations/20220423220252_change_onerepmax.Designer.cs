@@ -3,6 +3,7 @@ using System;
 using FitAppServer.DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,10 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace FitAppServer.DataAccess.Migrations
 {
     [DbContext(typeof(FitAppContext))]
-    partial class FitAppContextModelSnapshot : ModelSnapshot
+    [Migration("20220423220252_change_onerepmax")]
+    partial class change_onerepmax
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -75,6 +77,9 @@ namespace FitAppServer.DataAccess.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<int>("ExerciseInfoId")
+                        .HasColumnType("integer");
+
                     b.Property<int>("SetId")
                         .HasColumnType("integer");
 
@@ -85,6 +90,8 @@ namespace FitAppServer.DataAccess.Migrations
                         .HasColumnType("real");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ExerciseInfoId");
 
                     b.HasIndex("SetId");
 
@@ -203,6 +210,12 @@ namespace FitAppServer.DataAccess.Migrations
 
             modelBuilder.Entity("FitAppServer.DataAccess.Entities.OneRepMax", b =>
                 {
+                    b.HasOne("FitAppServer.DataAccess.Entities.ExerciseInfo", "ExerciseInfo")
+                        .WithMany()
+                        .HasForeignKey("ExerciseInfoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("FitAppServer.DataAccess.Entities.Set", "Set")
                         .WithMany()
                         .HasForeignKey("SetId")
@@ -214,6 +227,8 @@ namespace FitAppServer.DataAccess.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("ExerciseInfo");
 
                     b.Navigation("Set");
 

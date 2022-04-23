@@ -3,6 +3,7 @@ using System;
 using FitAppServer.DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,10 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace FitAppServer.DataAccess.Migrations
 {
     [DbContext(typeof(FitAppContext))]
-    partial class FitAppContextModelSnapshot : ModelSnapshot
+    [Migration("20220422191953_add_user_to_one_rep_max")]
+    partial class add_user_to_one_rep_max
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -53,16 +55,11 @@ namespace FitAppServer.DataAccess.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("ExerciseInfoId")
-                        .HasColumnType("integer");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ExerciseInfoId");
 
                     b.ToTable("ExerciseInfo");
                 });
@@ -74,6 +71,9 @@ namespace FitAppServer.DataAccess.Migrations
                         .HasColumnType("integer");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("Lift")
+                        .HasColumnType("integer");
 
                     b.Property<int>("SetId")
                         .HasColumnType("integer");
@@ -194,13 +194,6 @@ namespace FitAppServer.DataAccess.Migrations
                     b.Navigation("Workout");
                 });
 
-            modelBuilder.Entity("FitAppServer.DataAccess.Entities.ExerciseInfo", b =>
-                {
-                    b.HasOne("FitAppServer.DataAccess.Entities.ExerciseInfo", null)
-                        .WithMany("OneRepMaxes")
-                        .HasForeignKey("ExerciseInfoId");
-                });
-
             modelBuilder.Entity("FitAppServer.DataAccess.Entities.OneRepMax", b =>
                 {
                     b.HasOne("FitAppServer.DataAccess.Entities.Set", "Set")
@@ -210,7 +203,7 @@ namespace FitAppServer.DataAccess.Migrations
                         .IsRequired();
 
                     b.HasOne("FitAppServer.DataAccess.Entities.User", "User")
-                        .WithMany("Maxes")
+                        .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -250,14 +243,10 @@ namespace FitAppServer.DataAccess.Migrations
             modelBuilder.Entity("FitAppServer.DataAccess.Entities.ExerciseInfo", b =>
                 {
                     b.Navigation("Exercises");
-
-                    b.Navigation("OneRepMaxes");
                 });
 
             modelBuilder.Entity("FitAppServer.DataAccess.Entities.User", b =>
                 {
-                    b.Navigation("Maxes");
-
                     b.Navigation("Workouts");
                 });
 

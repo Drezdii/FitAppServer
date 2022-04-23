@@ -1,5 +1,6 @@
 using System.IdentityModel.Tokens.Jwt;
 using FitAppServer.DataAccess;
+using FitAppServer.Mutations;
 using FitAppServer.Resolvers;
 using FitAppServer.Services;
 using FitAppServer.Types;
@@ -38,6 +39,8 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddAuthorization();
 
 builder.Services.AddTransient<IWorkoutsService, WorkoutsService>();
+builder.Services.AddTransient<IAchievementsService, AchievementsService>();
+builder.Services.AddTransient<IAchievementsManager, AchievementsManager>();
 builder.Services.AddTransient<IUsersService, UsersService>();
 builder.Services.AddTransient<WorkoutsResolver>();
 builder.Services.AddTransient<WorkoutMutation>();
@@ -55,6 +58,9 @@ builder.Services
     .AddResolver<WorkoutsResolver>("WorkoutType")
     .AddResolver<WorkoutsResolver>("ExerciseType")
     .AddResolver<WorkoutsResolver>("SetType")
+    .AddResolver<AchievementsResolver>("OneRepMax")
+    .AddResolver<AchievementsResolver>("LiftType")
+    .AddResolver<AchievementsResolver>("Query")
     .AddResolver<WorkoutsResolver>("Query")
     .AddResolver<WorkoutMutation>("Mutation")
     .BindRuntimeType<WorkoutInput>()

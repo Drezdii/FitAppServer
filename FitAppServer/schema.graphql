@@ -6,6 +6,7 @@
 type Query {
     workout(id: ID!) : WorkoutType
     userWorkouts : [WorkoutType!]!
+    oneRepMaxes: [OneRepMax]!
 }
 
 type Mutation {
@@ -33,6 +34,18 @@ input SetInput {
     reps: Int!
     weight: Float!
     completed: Boolean!
+}
+
+type OneRepMax {
+    id: ID!
+    value: Float!
+    bigLiftType: BigLiftType!
+}
+
+enum BigLiftType {
+    DEADLIFT,
+    BENCH,
+    SQUAT
 }
 
 type WorkoutType  {

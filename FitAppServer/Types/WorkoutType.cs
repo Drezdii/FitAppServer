@@ -11,5 +11,6 @@ public class WorkoutType
     public DateTime? StartDate { get; set; }
     public DateTime? EndDate { get; set; }
     public List<ExerciseType> Exercises { get; set; } = new List<ExerciseType>();
+    // Change to GraphQL type
     public WorkoutTypeCode Type { get; set; }
 }

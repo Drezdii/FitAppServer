@@ -1,4 +1,5 @@
-﻿using System.Security.Claims;
+﻿using System;
+using System.Security.Claims;
 using Microsoft.AspNetCore.Http;
 
 namespace FitAppServer.Utils;
@@ -12,5 +13,6 @@ public class ClaimsAccessor : IClaimsAccessor
         _contextAccessor = accessor;
     }
 
-    public string UserId => _contextAccessor.HttpContext?.User.FindFirstValue("user_id") ?? "";
+    public string UserId => _contextAccessor.HttpContext?.User.FindFirstValue("user_id") ??
+                            throw new UnauthorizedAccessException();
 }

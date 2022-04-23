@@ -1,4 +1,4 @@
-﻿namespace FitAppServer.DataAccess.Entities;
+﻿namespace FitAppServer.Types;
 
 public enum BigLiftType
 {

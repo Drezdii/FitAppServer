@@ -1,26 +1,29 @@
 ﻿using System;
-using System.Security.Claims;
 using System.Threading.Tasks;
 using FitAppServer.Services;
+using FitAppServer.Types;
 using FitAppServer.Utils;
 using Microsoft.Extensions.Logging;
 
-namespace FitAppServer.Types;
+namespace FitAppServer.Mutations;
 
 public class WorkoutMutation
 {
     private readonly IWorkoutsService _workoutsService;
     private readonly IUsersService _usersService;
     private readonly ILogger<WorkoutMutation> _logger;
+    private readonly IAchievementsManager _achievementsManager;
     private readonly IClaimsAccessor _claims;
 
     public WorkoutMutation(IWorkoutsService workoutsService, IUsersService usersService,
         ILogger<WorkoutMutation> logger,
+        IAchievementsManager achievementsManager,
         IClaimsAccessor accessor)
     {
         _workoutsService = workoutsService;
         _usersService = usersService;
         _logger = logger;
+        _achievementsManager = achievementsManager;
         _claims = accessor;
     }
 
@@ -52,6 +55,7 @@ public class WorkoutMutation
         entity.User = user;
 
         var result = await _workoutsService.AddOrUpdateWorkoutAsync(entity);
+        _achievementsManager.Notify(Actions.SaveWorkout, result);
         _logger.LogInformation("Saving workout for user: {Id}", userId);
         return result.ToResultType();
     }
