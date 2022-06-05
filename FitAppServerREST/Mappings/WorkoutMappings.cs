@@ -1,4 +1,5 @@
 ﻿using FitAppServer.DataAccess.Entities;
+using FitAppServerREST.DTOs.Creator;
 using FitAppServerREST.DTOs.Workouts;
 
 namespace FitAppServerREST.Mappings;
@@ -74,6 +75,47 @@ public static class WorkoutMappings
             EndDate = workout.EndDate,
             Type = workout.Type,
             Exercises = exercises
+        };
+    }
+
+    public static Workout ToModel(this NewWorkoutDto workout)
+    {
+        var exercises = new List<Exercise>();
+
+        foreach (var exercise in workout.Exercises)
+        {
+            var sets = new List<Set>();
+
+            foreach (var set in exercise.Sets)
+                sets.Add(new Set
+                {
+                    Completed = set.Completed,
+                    Reps = set.Reps,
+                    Weight = set.Weight
+                });
+
+            exercises.Add(new Exercise
+            {
+                ExerciseInfoId = (int) exercise.ExerciseType,
+                Sets = sets
+            });
+        }
+
+        return new Workout
+        {
+            Date = workout.Date,
+            StartDate = workout.StartDate,
+            EndDate = workout.EndDate,
+            Type = workout.Type,
+            Exercises = exercises
+        };
+    }
+
+    public static WorkoutProgram ToModel(this ProgramDto program)
+    {
+        return new WorkoutProgram
+        {
+            Id = program.Id,
         };
     }
 }

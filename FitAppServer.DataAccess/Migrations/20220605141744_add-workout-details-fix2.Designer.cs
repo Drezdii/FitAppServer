@@ -3,6 +3,7 @@ using System;
 using FitAppServer.DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,10 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace FitAppServer.DataAccess.Migrations
 {
     [DbContext(typeof(FitAppContext))]
-    partial class FitAppContextModelSnapshot : ModelSnapshot
+    [Migration("20220605141744_add-workout-details-fix2")]
+    partial class addworkoutdetailsfix2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -163,14 +165,14 @@ namespace FitAppServer.DataAccess.Migrations
                     b.Property<int>("UserId")
                         .HasColumnType("integer");
 
-                    b.Property<int?>("WorkoutProgramDetailsId")
+                    b.Property<int?>("WorkoutDetailsId")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
 
                     b.HasIndex("UserId");
 
-                    b.HasIndex("WorkoutProgramDetailsId");
+                    b.HasIndex("WorkoutDetailsId");
 
                     b.ToTable("Workouts");
                 });
@@ -273,13 +275,13 @@ namespace FitAppServer.DataAccess.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("FitAppServer.DataAccess.Entities.WorkoutProgramDetail", "WorkoutProgramDetails")
+                    b.HasOne("FitAppServer.DataAccess.Entities.WorkoutProgramDetail", "WorkoutDetails")
                         .WithMany("Workouts")
-                        .HasForeignKey("WorkoutProgramDetailsId");
+                        .HasForeignKey("WorkoutDetailsId");
 
                     b.Navigation("User");
 
-                    b.Navigation("WorkoutProgramDetails");
+                    b.Navigation("WorkoutDetails");
                 });
 
             modelBuilder.Entity("FitAppServer.DataAccess.Entities.WorkoutProgramDetail", b =>

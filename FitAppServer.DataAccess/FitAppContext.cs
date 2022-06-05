@@ -15,6 +15,8 @@ public class FitAppContext : DbContext
     public DbSet<ExerciseInfo> ExerciseInfo { get; set; } = null!;
     public DbSet<Set> Sets { get; set; } = null!;
     public DbSet<OneRepMax> OneRepMaxes { get; set; } = null!;
+    public DbSet<WorkoutProgram> Programs { get; set; } = null!;
+    public DbSet<WorkoutProgramDetail> WorkoutProgramDetails { get; set; } = null!;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

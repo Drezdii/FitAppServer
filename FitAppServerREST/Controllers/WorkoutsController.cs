@@ -1,4 +1,7 @@
-﻿using FitAppServer.Services;
+﻿using System.Collections.ObjectModel;
+using FitAppServer.DataAccess.Entities;
+using FitAppServer.Services;
+using FitAppServer.Services.Models;
 using FitAppServerREST.DTOs.Creator;
 using FitAppServerREST.DTOs.Workouts;
 using FitAppServerREST.Mappings;
@@ -93,26 +96,31 @@ public class WorkoutsController : ControllerBase
 
     [HttpPost]
     [Route("program")]
+    [Authorize]
     public async Task<IActionResult> AddProgramCycle(ProgramCycleDto programCycle)
     {
-        var test = new Dictionary<int, List<NewWorkoutDto>>
+        var claimsUserId = User.Claims.Single(q => q.Type == "user_id").Value;
+        var user = await _usersService.GetUserAsync(claimsUserId);
+
+        if (user == null) return BadRequest();
+
+        if (user.Uuid != claimsUserId) return Forbid();
+
+        // Map workouts to model objects
+        var workoutsByWeek =
+            programCycle.WorkoutsByWeek.ToDictionary(q => q.Key,
+                q => (IReadOnlyCollection<Workout>) q.Value.Select(w => w.ToModel()).ToList());
+
+
+        var cycle = new ProgramCycle
         {
-            {
-                1, new List<NewWorkoutDto>
-                {
-                    new NewWorkoutDto
-                    {
-                    }
-                }
-            }
+            Program = programCycle.Program.ToModel(),
+            WorkoutsByWeek = workoutsByWeek,
+            User = user
         };
-        return Ok(new ProgramCycleDto
-        {
-            Program = new ProgramDto
-            {
-                Id = 1
-            },
-            WorkoutsByWeek = test
-        });
+
+        var res = await _workoutsService.AddProgramCycle(cycle);
+
+        return Ok(res.ToString());
     }
 }

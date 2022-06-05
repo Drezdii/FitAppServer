@@ -7,5 +7,4 @@ public class ExerciseInfo
     public int Id { get; set; }
     public string Name { get; set; } = null!;
     public ICollection<Exercise> Exercises { get; set; } = null!;
-    public ICollection<OneRepMax> OneRepMaxes { get; set; } = null!;
 }

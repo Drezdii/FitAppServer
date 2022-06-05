@@ -15,5 +15,6 @@ public class Workout
     public ICollection<Exercise> Exercises { get; set; } = new List<Exercise>();
     public WorkoutTypeCode Type { get; set; }
     public User User { get; set; } = null!;
-    public WorkoutProgram? Program { get; set; }
+    public int UserId { get; set; }
+    public WorkoutProgramDetail? WorkoutProgramDetails { get; set; }
 }

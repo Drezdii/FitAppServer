@@ -3,6 +3,7 @@ using System;
 using FitAppServer.DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,10 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace FitAppServer.DataAccess.Migrations
 {
     [DbContext(typeof(FitAppContext))]
-    partial class FitAppContextModelSnapshot : ModelSnapshot
+    [Migration("20220605141009_add-workout-details")]
+    partial class addworkoutdetails
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -70,6 +72,9 @@ namespace FitAppServer.DataAccess.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<int?>("ExerciseInfoId")
+                        .HasColumnType("integer");
+
                     b.Property<int>("SetId")
                         .HasColumnType("integer");
 
@@ -80,6 +85,8 @@ namespace FitAppServer.DataAccess.Migrations
                         .HasColumnType("real");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ExerciseInfoId");
 
                     b.HasIndex("SetId");
 
@@ -163,14 +170,19 @@ namespace FitAppServer.DataAccess.Migrations
                     b.Property<int>("UserId")
                         .HasColumnType("integer");
 
-                    b.Property<int?>("WorkoutProgramDetailsId")
+                    b.Property<int?>("WorkoutDetailsId")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("WorkoutProgramId")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
 
                     b.HasIndex("UserId");
 
-                    b.HasIndex("WorkoutProgramDetailsId");
+                    b.HasIndex("WorkoutDetailsId");
+
+                    b.HasIndex("WorkoutProgramId");
 
                     b.ToTable("Workouts");
                 });
@@ -189,7 +201,7 @@ namespace FitAppServer.DataAccess.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Programs");
+                    b.ToTable("WorkoutProgram");
                 });
 
             modelBuilder.Entity("FitAppServer.DataAccess.Entities.WorkoutProgramDetail", b =>
@@ -213,7 +225,7 @@ namespace FitAppServer.DataAccess.Migrations
 
                     b.HasIndex("ProgramId");
 
-                    b.ToTable("WorkoutProgramDetails");
+                    b.ToTable("WorkoutProgramDetail");
                 });
 
             modelBuilder.Entity("FitAppServer.DataAccess.Entities.Exercise", b =>
@@ -237,6 +249,10 @@ namespace FitAppServer.DataAccess.Migrations
 
             modelBuilder.Entity("FitAppServer.DataAccess.Entities.OneRepMax", b =>
                 {
+                    b.HasOne("FitAppServer.DataAccess.Entities.ExerciseInfo", null)
+                        .WithMany("OneRepMaxes")
+                        .HasForeignKey("ExerciseInfoId");
+
                     b.HasOne("FitAppServer.DataAccess.Entities.Set", "Set")
                         .WithMany()
                         .HasForeignKey("SetId")
@@ -273,19 +289,23 @@ namespace FitAppServer.DataAccess.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("FitAppServer.DataAccess.Entities.WorkoutProgramDetail", "WorkoutProgramDetails")
+                    b.HasOne("FitAppServer.DataAccess.Entities.WorkoutProgramDetail", "WorkoutDetails")
                         .WithMany("Workouts")
-                        .HasForeignKey("WorkoutProgramDetailsId");
+                        .HasForeignKey("WorkoutDetailsId");
+
+                    b.HasOne("FitAppServer.DataAccess.Entities.WorkoutProgram", null)
+                        .WithMany("Workouts")
+                        .HasForeignKey("WorkoutProgramId");
 
                     b.Navigation("User");
 
-                    b.Navigation("WorkoutProgramDetails");
+                    b.Navigation("WorkoutDetails");
                 });
 
             modelBuilder.Entity("FitAppServer.DataAccess.Entities.WorkoutProgramDetail", b =>
                 {
                     b.HasOne("FitAppServer.DataAccess.Entities.WorkoutProgram", "Program")
-                        .WithMany("ProgramDetails")
+                        .WithMany()
                         .HasForeignKey("ProgramId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -301,6 +321,8 @@ namespace FitAppServer.DataAccess.Migrations
             modelBuilder.Entity("FitAppServer.DataAccess.Entities.ExerciseInfo", b =>
                 {
                     b.Navigation("Exercises");
+
+                    b.Navigation("OneRepMaxes");
                 });
 
             modelBuilder.Entity("FitAppServer.DataAccess.Entities.User", b =>
@@ -317,7 +339,7 @@ namespace FitAppServer.DataAccess.Migrations
 
             modelBuilder.Entity("FitAppServer.DataAccess.Entities.WorkoutProgram", b =>
                 {
-                    b.Navigation("ProgramDetails");
+                    b.Navigation("Workouts");
                 });
 
             modelBuilder.Entity("FitAppServer.DataAccess.Entities.WorkoutProgramDetail", b =>

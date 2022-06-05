@@ -6,5 +6,5 @@ public class WorkoutProgram
 {
     public int Id { get; set; }
     public string Name { get; set; } = null!;
-    public ICollection<Workout> Workouts { get; set; } = new List<Workout>();
+    public ICollection<WorkoutProgramDetail> ProgramDetails { get; set; } = new List<WorkoutProgramDetail>();
 }

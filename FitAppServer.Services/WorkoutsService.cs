@@ -4,12 +4,13 @@ using System.Linq;
 using System.Threading.Tasks;
 using FitAppServer.DataAccess;
 using FitAppServer.DataAccess.Entities;
+using FitAppServer.Services.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace FitAppServer.Services;
 
-public class WorkoutsService : IWorkoutsService, IAsyncDisposable
+public class WorkoutsService : IWorkoutsService
 {
     private readonly FitAppContext _context;
     private readonly ILogger<WorkoutsService> _logger;
@@ -113,5 +114,33 @@ public class WorkoutsService : IWorkoutsService, IAsyncDisposable
         _context.Workouts.Remove(workout);
 
         await _context.SaveChangesAsync();
+    }
+
+    public async Task<IReadOnlyDictionary<int, IReadOnlyCollection<Workout>>> AddProgramCycle(ProgramCycle programCycle)
+    {
+        var program = _context.Programs.First(q => q.Id == programCycle.Program.Id);
+        foreach (var workoutWeek in programCycle.WorkoutsByWeek)
+        {
+            var workoutDetails = new WorkoutProgramDetail
+            {
+                Program = program,
+                // TODO: Add automatic counting of cycles already finished
+                Cycle = 1,
+                Week = workoutWeek.Key,
+            };
+
+            // Add program details to each workout
+            foreach (var workout in workoutWeek.Value)
+            {
+                workout.UserId = programCycle.User.Id;
+                workout.WorkoutProgramDetails = workoutDetails;
+            }
+
+            _context.Workouts.AddRange(workoutWeek.Value);
+        }
+
+        await _context.SaveChangesAsync();
+
+        return programCycle.WorkoutsByWeek;
     }
 }

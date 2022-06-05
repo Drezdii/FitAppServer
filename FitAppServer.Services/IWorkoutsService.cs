@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using FitAppServer.DataAccess.Entities;
+using FitAppServer.Services.Models;
 
 namespace FitAppServer.Services;
 
@@ -10,4 +11,6 @@ public interface IWorkoutsService
     Task<Workout?> GetByWorkoutIdAsync(int workoutid);
     Task<Workout> AddOrUpdateWorkoutAsync(Workout workout);
     Task DeleteWorkoutAsync(int workoutid);
+
+    Task<IReadOnlyDictionary<int, IReadOnlyCollection<Workout>>> AddProgramCycle(ProgramCycle programCycle);
 }
