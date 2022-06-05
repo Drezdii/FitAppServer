@@ -2,7 +2,7 @@
 
 public enum WorkoutTypeCode
 {
-    None = 0,
+    None,
     Deadlift,
     Bench,
     Squat,

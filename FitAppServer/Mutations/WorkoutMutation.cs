@@ -9,11 +9,11 @@ namespace FitAppServer.Mutations;
 
 public class WorkoutMutation
 {
-    private readonly IWorkoutsService _workoutsService;
-    private readonly IUsersService _usersService;
-    private readonly ILogger<WorkoutMutation> _logger;
     private readonly IAchievementsManager _achievementsManager;
     private readonly IClaimsAccessor _claims;
+    private readonly ILogger<WorkoutMutation> _logger;
+    private readonly IUsersService _usersService;
+    private readonly IWorkoutsService _workoutsService;
 
     public WorkoutMutation(IWorkoutsService workoutsService, IUsersService usersService,
         ILogger<WorkoutMutation> logger,
@@ -37,10 +37,7 @@ public class WorkoutMutation
     {
         var userId = _claims.UserId;
 
-        if (userId == "")
-        {
-            userId = "Zf42J6wSkUTJWcBRfdCJCViuVxu1";
-        }
+        if (userId == "") userId = "Zf42J6wSkUTJWcBRfdCJCViuVxu1";
 
         var user = await _usersService.GetUserAsync(userId);
 

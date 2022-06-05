@@ -5,16 +5,16 @@ namespace FitAppServer.DataAccess;
 
 public class FitAppContext : DbContext
 {
+    public FitAppContext(DbContextOptions options) : base(options)
+    {
+    }
+
     public DbSet<User> Users { get; set; } = null!;
     public DbSet<Workout> Workouts { get; set; } = null!;
     public DbSet<Exercise> Exercises { get; set; } = null!;
     public DbSet<ExerciseInfo> ExerciseInfo { get; set; } = null!;
     public DbSet<Set> Sets { get; set; } = null!;
     public DbSet<OneRepMax> OneRepMaxes { get; set; } = null!;
-
-    public FitAppContext(DbContextOptions options) : base(options)
-    {
-    }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

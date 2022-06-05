@@ -11,11 +11,11 @@ namespace FitAppServer.Services;
 public class AchievementsService : IAchievementsService
 {
     private readonly FitAppContext _context;
-    private readonly ILogger _logger;
+    private readonly ILogger<AchievementsService> _logger;
 
-    public AchievementsService(IDbContextFactory<FitAppContext> context, ILogger<AchievementsService> logger)
+    public AchievementsService(FitAppContext context, ILogger<AchievementsService> logger)
     {
-        _context = context.CreateDbContext();
+        _context = context;
         _logger = logger;
     }
 

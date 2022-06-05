@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace FitAppServer.DataAccess.Entities;
+﻿namespace FitAppServer.DataAccess.Entities;
 
 public class OneRepMax
 {

@@ -2,10 +2,9 @@
 
 namespace FitAppServer.DataAccess.Entities;
 
-public class ExerciseInfo
+public class WorkoutProgram
 {
     public int Id { get; set; }
     public string Name { get; set; } = null!;
-    public ICollection<Exercise> Exercises { get; set; } = null!;
-    public ICollection<OneRepMax> OneRepMaxes { get; set; } = null!;
+    public ICollection<Workout> Workouts { get; set; } = new List<Workout>();
 }

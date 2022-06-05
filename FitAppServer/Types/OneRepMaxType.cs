@@ -1,6 +1,4 @@
-﻿using FitAppServer.DataAccess.Entities;
-
-namespace FitAppServer.Types;
+﻿namespace FitAppServer.Types;
 
 public class OneRepMaxType
 {

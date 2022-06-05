@@ -1,12 +1,10 @@
 ﻿using System;
+using System.Threading.Tasks;
 using FirebaseAdmin.Auth;
 using FitAppServer.DataAccess;
 using FitAppServer.DataAccess.Entities;
 using FitAppServer.Services.DTOs.Users;
 using Microsoft.EntityFrameworkCore;
-using System.Linq;
-using System.Threading.Tasks;
-using FitAppServer.Services.Models;
 using AuthErrorCode = FitAppServer.Services.Models.AuthErrorCode;
 
 namespace FitAppServer.Services;
@@ -15,9 +13,14 @@ public class UsersService : IUsersService, IAsyncDisposable
 {
     private readonly FitAppContext _context;
 
-    public UsersService(IDbContextFactory<FitAppContext> context)
+    public UsersService(FitAppContext context)
     {
-        _context = context.CreateDbContext();
+        _context = context;
+    }
+
+    public ValueTask DisposeAsync()
+    {
+        return _context.DisposeAsync();
     }
 
     public async Task<User?> GetUserAsync(string userid)
@@ -73,10 +76,5 @@ public class UsersService : IUsersService, IAsyncDisposable
                 ErrorCode = AuthErrorCode.GenericError
             };
         }
-    }
-
-    public ValueTask DisposeAsync()
-    {
-        return _context.DisposeAsync();
     }
 }

@@ -1,15 +1,10 @@
 using System.IdentityModel.Tokens.Jwt;
+using System.Text.Json.Serialization;
 using FitAppServer.DataAccess;
-using FitAppServer.Mutations;
-using FitAppServer.Resolvers;
 using FitAppServer.Services;
-using FitAppServer.Types;
+using FitAppServerREST.Utils;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -32,7 +27,6 @@ builder.Services
 
 JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
 
-builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddAuthorization();
 
@@ -40,40 +34,26 @@ builder.Services.AddScoped<IWorkoutsService, WorkoutsService>();
 builder.Services.AddScoped<IAchievementsService, AchievementsService>();
 builder.Services.AddScoped<IAchievementsManager, AchievementsManager>();
 builder.Services.AddScoped<IUsersService, UsersService>();
-builder.Services.AddScoped<WorkoutsResolver>();
 
-builder.Services.AddHttpContextAccessor();
-
-builder.Services.AddPooledDbContextFactory<FitAppContext>(options =>
+builder.Services.AddDbContext<FitAppContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("postgres")));
 
-builder.Services
-    .AddGraphQLServer()
-    .AddAuthorization()
-    .AddDocumentFromFile("schema.graphql")
-    .AddResolver<WorkoutsResolver>("WorkoutType")
-    .AddResolver<WorkoutsResolver>("ExerciseType")
-    .AddResolver<WorkoutsResolver>("SetType")
-    .AddResolver<AchievementsResolver>("OneRepMax")
-    .AddResolver<AchievementsResolver>("LiftType")
-    .AddResolver<AchievementsResolver>("Query")
-    .AddResolver<WorkoutsResolver>("Query")
-    .AddResolver<WorkoutMutation>("Mutation")
-    .BindRuntimeType<WorkoutInput>()
-    .BindRuntimeType<ExerciseInput>()
-    .BindRuntimeType<SetInput>();
+builder.Services.AddControllers();
+
+builder.Services.AddMvc().AddJsonOptions(opt =>
+{
+    opt.JsonSerializerOptions.AddDateOnlyConverters();
+    opt.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+});
 
 var app = builder.Build();
 
-app.UseForwardedHeaders(new ForwardedHeadersOptions
-{
-    ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
-});
+app.UseHttpsRedirection();
 
-app.UseRouting();
 app.UseAuthentication();
+app.UseRouting();
 app.UseAuthorization();
 
-app.MapGraphQL();
+app.MapControllers();
 
 app.Run();

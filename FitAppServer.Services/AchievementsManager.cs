@@ -1,14 +1,12 @@
-﻿using System;
-using System.Linq;
-using FitAppServer.DataAccess.Entities;
+﻿using FitAppServer.DataAccess.Entities;
 using Microsoft.Extensions.Logging;
 
 namespace FitAppServer.Services;
 
 public class AchievementsManager : IAchievementsManager
 {
-    private readonly ILogger _logger;
     private readonly IAchievementsService _achievementsService;
+    private readonly ILogger _logger;
 
     public AchievementsManager(ILogger<AchievementsManager> logger, IAchievementsService achievementsService)
     {

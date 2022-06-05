@@ -1,10 +1,10 @@
 ﻿using System;
-using FitAppServer.DataAccess;
-using FitAppServer.DataAccess.Entities;
-using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using FitAppServer.DataAccess;
+using FitAppServer.DataAccess.Entities;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace FitAppServer.Services;
@@ -12,25 +12,32 @@ namespace FitAppServer.Services;
 public class WorkoutsService : IWorkoutsService, IAsyncDisposable
 {
     private readonly FitAppContext _context;
-    private readonly ILogger _logger;
+    private readonly ILogger<WorkoutsService> _logger;
 
-    public WorkoutsService(IDbContextFactory<FitAppContext> context, ILogger<WorkoutsService> logger)
+    public WorkoutsService(FitAppContext context, ILogger<WorkoutsService> logger)
     {
-        _context = context.CreateDbContext();
+        _context = context;
         _logger = logger;
     }
 
-    public async Task<List<Workout>> GetByUserIdAsync(string userid)
+    public ValueTask DisposeAsync()
     {
-        return await _context.Workouts
+        return _context.DisposeAsync();
+    }
+
+    public async Task<ICollection<Workout>> GetByUserIdAsync(string userid)
+    {
+        var workouts = await _context.Workouts
             .Where(q => q.User.Uuid == userid)
             .OrderByDescending(q => q.StartDate)
             .ToListAsync();
+
+        return workouts;
     }
 
     public async Task<Workout?> GetByWorkoutIdAsync(int workoutid)
     {
-        return await _context.Workouts.Where(q => q.Id == workoutid)
+        var workout = await _context.Workouts.Where(q => q.Id == workoutid)
             .Include(q => q.Exercises)
             .ThenInclude(q => q.ExerciseInfo)
             .Include(q => q.Exercises)
@@ -39,46 +46,22 @@ public class WorkoutsService : IWorkoutsService, IAsyncDisposable
             .AsNoTrackingWithIdentityResolution()
             .AsSplitQuery()
             .SingleOrDefaultAsync();
-    }
 
-    public async Task<ICollection<Exercise>> GetExercisesByWorkoutIdsAsync(IReadOnlyCollection<int> ids)
-    {
-        return await _context.Exercises
-            .Where(q => ids.Contains(q.WorkoutId))
-            .AsNoTrackingWithIdentityResolution()
-            .ToListAsync();
-    }
-
-    public async Task<ICollection<Set>> GetSetsByExerciseIdsAsync(IReadOnlyCollection<int> ids)
-    {
-        return await _context.Sets
-            .Where(q => ids.Contains(q.ExerciseId))
-            .AsNoTrackingWithIdentityResolution()
-            .ToListAsync();
+        return workout;
     }
 
     public async Task<Workout> AddOrUpdateWorkoutAsync(Workout workout)
     {
         // Clear any IDs that might have been posted
-        if (workout.Id < 0)
-        {
-            workout.Id = 0;
-        }
+        if (workout.Id < 0) workout.Id = 0;
 
         foreach (var ex in workout.Exercises)
         {
             foreach (var set in ex.Sets)
-            {
                 if (set.Id < 0)
-                {
                     set.Id = 0;
-                }
-            }
 
-            if (ex.Id < 0)
-            {
-                ex.Id = 0;
-            }
+            if (ex.Id < 0) ex.Id = 0;
         }
 
         // Check if this is a new workout
@@ -100,10 +83,7 @@ public class WorkoutsService : IWorkoutsService, IAsyncDisposable
 
         var setsIds = new List<int>();
 
-        foreach (var ex in workout.Exercises)
-        {
-            setsIds.AddRange(ex.Sets.Select(q => q.Id).ToList());
-        }
+        foreach (var ex in workout.Exercises) setsIds.AddRange(ex.Sets.Select(q => q.Id).ToList());
 
         // Load all exercises in this workout at once
         var allExistingExercises = await _context.Exercises.Where(q => q.Workout.Id == workout.Id)
@@ -133,10 +113,5 @@ public class WorkoutsService : IWorkoutsService, IAsyncDisposable
         _context.Workouts.Remove(workout);
 
         await _context.SaveChangesAsync();
-    }
-
-    public ValueTask DisposeAsync()
-    {
-        return _context.DisposeAsync();
     }
 }

@@ -12,9 +12,9 @@ namespace FitAppServer.Resolvers;
 
 public class WorkoutsResolver
 {
-    private readonly IWorkoutsService _workoutsService;
-    private readonly ILogger _logger;
     private readonly IClaimsAccessor _claims;
+    private readonly ILogger _logger;
+    private readonly IWorkoutsService _workoutsService;
 
     public WorkoutsResolver(IWorkoutsService service, ILogger<WorkoutsResolver> logger, IClaimsAccessor accessor)
     {
@@ -29,10 +29,7 @@ public class WorkoutsResolver
 
         var workout = await _workoutsService.GetByWorkoutIdAsync(id);
 
-        if (workout == null)
-        {
-            return null;
-        }
+        if (workout == null) return null;
 
         return new WorkoutType
         {

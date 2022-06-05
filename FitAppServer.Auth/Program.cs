@@ -29,7 +29,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
         ValidateAudience = true,
         ValidateLifetime = true,
         ValidIssuer = "https://securetoken.google.com/fitapp-68345",
-        ValidAudience = "fitapp-68345",
+        ValidAudience = "fitapp-68345"
     };
 });
 

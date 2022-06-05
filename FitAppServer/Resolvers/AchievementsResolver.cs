@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using FitAppServer.DataAccess.Entities;
 using FitAppServer.Services;
 using FitAppServer.Types;
 using FitAppServer.Utils;
@@ -12,8 +11,8 @@ namespace FitAppServer.Resolvers;
 public class AchievementsResolver
 {
     private readonly IAchievementsService _achievementsService;
-    private readonly ILogger _logger;
     private readonly IClaimsAccessor _claims;
+    private readonly ILogger _logger;
 
     public AchievementsResolver(IAchievementsService service, ILogger<AchievementsResolver> logger,
         IClaimsAccessor accessor)

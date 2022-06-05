@@ -1,5 +1,4 @@
-﻿using System;
-using FitAppServer.DataAccess.Entities;
+﻿using FitAppServer.DataAccess.Entities;
 
 namespace FitAppServer.Services;
 
