@@ -1,4 +1,5 @@
 ﻿using FitAppServer.DataAccess.Entities;
+using FitAppServerREST.DTOs.Creator;
 
 namespace FitAppServerREST.DTOs.Workouts;
 
@@ -10,4 +11,5 @@ public class WorkoutDto
     public DateTime? EndDate { get; set; }
     public WorkoutTypeCode Type { get; set; } = WorkoutTypeCode.None;
     public List<ExerciseDto> Exercises { get; set; } = new();
+    public WorkoutProgramDetailsDto? Program { get; set; }
 }

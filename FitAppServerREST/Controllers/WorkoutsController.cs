@@ -1,5 +1,4 @@
-﻿using System.Collections.ObjectModel;
-using FitAppServer.DataAccess.Entities;
+﻿using FitAppServer.DataAccess.Entities;
 using FitAppServer.Services;
 using FitAppServer.Services.Models;
 using FitAppServerREST.DTOs.Creator;
@@ -30,6 +29,22 @@ public class WorkoutsController : ControllerBase
     [Authorize]
     public async Task<IActionResult> ByUserId(string userid)
     {
+        // Compare userid to Token userid here
+        // if userid == userid from token => continue
+        var claimsUserId = User.Claims.Single(q => q.Type == "user_id").Value;
+
+        var user = await _usersService.GetUserAsync(claimsUserId);
+
+        if (user == null)
+        {
+            return BadRequest();
+        }
+
+        if (user.Uuid != claimsUserId)
+        {
+            return Forbid();
+        }
+
         _logger.LogInformation("Getting workouts for user: {Id}", userid);
 
         var workouts = await _workoutsService.GetByUserIdAsync(userid);
@@ -49,9 +64,15 @@ public class WorkoutsController : ControllerBase
 
         var user = await _usersService.GetUserAsync(claimsUserId);
 
-        if (user == null) return BadRequest();
+        if (user == null)
+        {
+            return BadRequest();
+        }
 
-        if (user.Uuid != claimsUserId) return Forbid();
+        if (user.Uuid != claimsUserId)
+        {
+            return Forbid();
+        }
 
         wrk.User = user;
 
@@ -60,10 +81,16 @@ public class WorkoutsController : ControllerBase
         {
             var existingWorkout = await _workoutsService.GetByWorkoutIdAsync(wrk.Id);
 
-            if (existingWorkout == null) return NotFound();
+            if (existingWorkout == null)
+            {
+                return NotFound();
+            }
 
             // Workout belongs to another user
-            if (existingWorkout.User.Uuid != claimsUserId) return Forbid();
+            if (existingWorkout.User.Uuid != claimsUserId)
+            {
+                return Forbid();
+            }
         }
 
         var res = await _workoutsService.AddOrUpdateWorkoutAsync(wrk);
@@ -73,22 +100,50 @@ public class WorkoutsController : ControllerBase
 
     [HttpGet]
     [Route("{workoutid:int}")]
-    // [Authorize]
+    [Authorize]
     public async Task<IActionResult> GetWorkout(int workoutid)
     {
         _logger.LogInformation("Getting workout with id: {Id}", workoutid);
 
+        var claimsUserId = User.Claims.Single(q => q.Type == "user_id").Value;
+
         var workout = await _workoutsService.GetByWorkoutIdAsync(workoutid);
 
-        if (workout == null) return NotFound();
+        if (workout == null)
+        {
+            return NotFound();
+        }
+
+        if (workout.User.Uuid != claimsUserId)
+        {
+            return Forbid();
+        }
 
         return Ok(workout.ToDto());
     }
 
     [HttpDelete]
     [Route("{workoutid:int}")]
+    [Authorize]
     public async Task<IActionResult> DeleteWorkout(int workoutid)
     {
+        // Compare userid to Token userid here
+        // if userid == userid from token => continue
+        var claimsUserId = User.Claims.Single(q => q.Type == "user_id").Value;
+
+        var existingWorkout = await _workoutsService.GetByWorkoutIdAsync(workoutid);
+
+        if (existingWorkout == null)
+        {
+            return NotFound();
+        }
+
+        // Workout belongs to another user
+        if (existingWorkout.User.Uuid != claimsUserId)
+        {
+            return Forbid();
+        }
+
         await _workoutsService.DeleteWorkoutAsync(workoutid);
 
         return Ok();
@@ -100,11 +155,18 @@ public class WorkoutsController : ControllerBase
     public async Task<IActionResult> AddProgramCycle(ProgramCycleDto programCycle)
     {
         var claimsUserId = User.Claims.Single(q => q.Type == "user_id").Value;
+
         var user = await _usersService.GetUserAsync(claimsUserId);
 
-        if (user == null) return BadRequest();
+        if (user == null)
+        {
+            return BadRequest();
+        }
 
-        if (user.Uuid != claimsUserId) return Forbid();
+        if (user.Uuid != claimsUserId)
+        {
+            return Forbid();
+        }
 
         // Map workouts to model objects
         var workoutsByWeek =
@@ -114,7 +176,7 @@ public class WorkoutsController : ControllerBase
 
         var cycle = new ProgramCycle
         {
-            Program = programCycle.Program.ToModel(),
+            Program = programCycle.WorkoutProgramDetails.ToModel(),
             WorkoutsByWeek = workoutsByWeek,
             User = user
         };

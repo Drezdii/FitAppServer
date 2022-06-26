@@ -38,7 +38,8 @@ public static class WorkoutMappings
             StartDate = workout.StartDate,
             EndDate = workout.EndDate,
             Type = workout.Type,
-            Exercises = exercises
+            Exercises = exercises,
+            Program = workout.WorkoutProgramDetails?.ToDto()
         };
     }
 
@@ -89,9 +90,9 @@ public static class WorkoutMappings
             foreach (var set in exercise.Sets)
                 sets.Add(new Set
                 {
-                    Completed = set.Completed,
                     Reps = set.Reps,
-                    Weight = set.Weight
+                    Weight = set.Weight,
+                    Completed = false
                 });
 
             exercises.Add(new Exercise
@@ -111,11 +112,21 @@ public static class WorkoutMappings
         };
     }
 
-    public static WorkoutProgram ToModel(this ProgramDto program)
+    public static WorkoutProgram ToModel(this WorkoutProgramDetailsDto workoutProgramDetails)
     {
         return new WorkoutProgram
         {
-            Id = program.Id,
+            Id = workoutProgramDetails.Id,
+        };
+    }
+
+    private static WorkoutProgramDetailsDto ToDto(this WorkoutProgramDetail workoutProgram)
+    {
+        return new WorkoutProgramDetailsDto
+        {
+            Id = workoutProgram.Program.Id,
+            Name = workoutProgram.Program.Name,
+            Week = workoutProgram.Week
         };
     }
 }

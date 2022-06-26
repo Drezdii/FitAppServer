@@ -4,6 +4,7 @@ using FitAppServer.DataAccess;
 using FitAppServer.Services;
 using FitAppServerREST.Utils;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 
@@ -35,8 +36,19 @@ builder.Services.AddScoped<IAchievementsService, AchievementsService>();
 builder.Services.AddScoped<IAchievementsManager, AchievementsManager>();
 builder.Services.AddScoped<IUsersService, UsersService>();
 
-builder.Services.AddDbContext<FitAppContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("postgres")));
+// Check if this actually works
+if (builder.Configuration.GetConnectionString("postgres") != null)
+{
+    builder.Services.AddDbContext<FitAppContext>(options =>
+        options.UseNpgsql(builder.Configuration.GetConnectionString("postgres")));
+}
+else
+{
+    // Pass empty connection string to enable EFBundle to work
+    // https://github.com/dotnet/efcore/issues/27325#issuecomment-1028795149
+    builder.Services.AddDbContext<FitAppContext>(options => options.UseNpgsql(""));
+}
+
 
 builder.Services.AddControllers();
 
@@ -46,7 +58,16 @@ builder.Services.AddMvc().AddJsonOptions(opt =>
     opt.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
 });
 
+builder.Services.Configure<ForwardedHeadersOptions>(options =>
+{
+    options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+    options.KnownProxies.Clear();
+    options.KnownNetworks.Clear();
+});
+
 var app = builder.Build();
+
+app.UseForwardedHeaders();
 
 app.UseHttpsRedirection();
 

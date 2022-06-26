@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace FitAppServer.DataAccess.Migrations
 {
     [DbContext(typeof(FitAppContext))]
-    [Migration("20220422191727_change_one_rep_max")]
-    partial class change_one_rep_max
+    [Migration("20220620184053_initial-migration")]
+    partial class initialmigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -72,10 +72,10 @@ namespace FitAppServer.DataAccess.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("Lift")
+                    b.Property<int>("SetId")
                         .HasColumnType("integer");
 
-                    b.Property<int>("SetId")
+                    b.Property<int>("UserId")
                         .HasColumnType("integer");
 
                     b.Property<float>("Value")
@@ -84,6 +84,8 @@ namespace FitAppServer.DataAccess.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("SetId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("OneRepMaxes");
                 });
@@ -148,7 +150,7 @@ namespace FitAppServer.DataAccess.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<DateOnly>("Date")
+                    b.Property<DateOnly?>("Date")
                         .HasColumnType("date");
 
                     b.Property<DateTime?>("EndDate")
@@ -163,11 +165,57 @@ namespace FitAppServer.DataAccess.Migrations
                     b.Property<int>("UserId")
                         .HasColumnType("integer");
 
+                    b.Property<int?>("WorkoutProgramDetailsId")
+                        .HasColumnType("integer");
+
                     b.HasKey("Id");
 
                     b.HasIndex("UserId");
 
+                    b.HasIndex("WorkoutProgramDetailsId");
+
                     b.ToTable("Workouts");
+                });
+
+            modelBuilder.Entity("FitAppServer.DataAccess.Entities.WorkoutProgram", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Programs");
+                });
+
+            modelBuilder.Entity("FitAppServer.DataAccess.Entities.WorkoutProgramDetail", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("Cycle")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("ProgramId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Week")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProgramId");
+
+                    b.ToTable("WorkoutProgramDetails");
                 });
 
             modelBuilder.Entity("FitAppServer.DataAccess.Entities.Exercise", b =>
@@ -197,7 +245,15 @@ namespace FitAppServer.DataAccess.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("FitAppServer.DataAccess.Entities.User", "User")
+                        .WithMany("Maxes")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Set");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("FitAppServer.DataAccess.Entities.Set", b =>
@@ -219,7 +275,24 @@ namespace FitAppServer.DataAccess.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("FitAppServer.DataAccess.Entities.WorkoutProgramDetail", "WorkoutProgramDetails")
+                        .WithMany("Workouts")
+                        .HasForeignKey("WorkoutProgramDetailsId");
+
                     b.Navigation("User");
+
+                    b.Navigation("WorkoutProgramDetails");
+                });
+
+            modelBuilder.Entity("FitAppServer.DataAccess.Entities.WorkoutProgramDetail", b =>
+                {
+                    b.HasOne("FitAppServer.DataAccess.Entities.WorkoutProgram", "Program")
+                        .WithMany("ProgramDetails")
+                        .HasForeignKey("ProgramId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Program");
                 });
 
             modelBuilder.Entity("FitAppServer.DataAccess.Entities.Exercise", b =>
@@ -234,12 +307,24 @@ namespace FitAppServer.DataAccess.Migrations
 
             modelBuilder.Entity("FitAppServer.DataAccess.Entities.User", b =>
                 {
+                    b.Navigation("Maxes");
+
                     b.Navigation("Workouts");
                 });
 
             modelBuilder.Entity("FitAppServer.DataAccess.Entities.Workout", b =>
                 {
                     b.Navigation("Exercises");
+                });
+
+            modelBuilder.Entity("FitAppServer.DataAccess.Entities.WorkoutProgram", b =>
+                {
+                    b.Navigation("ProgramDetails");
+                });
+
+            modelBuilder.Entity("FitAppServer.DataAccess.Entities.WorkoutProgramDetail", b =>
+                {
+                    b.Navigation("Workouts");
                 });
 #pragma warning restore 612, 618
         }

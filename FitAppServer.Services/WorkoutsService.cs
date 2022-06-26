@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using FitAppServer.DataAccess;
@@ -31,6 +30,8 @@ public class WorkoutsService : IWorkoutsService
         var workouts = await _context.Workouts
             .Where(q => q.User.Uuid == userid)
             .OrderByDescending(q => q.StartDate)
+            .Include(q => q.WorkoutProgramDetails)
+            .ThenInclude(q => q.Program)
             .ToListAsync();
 
         return workouts;

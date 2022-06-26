@@ -9,11 +9,21 @@ using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Check if this actually works
+if (builder.Configuration.GetConnectionString("postgres") != null)
+{
+    builder.Services.AddDbContext<FitAppContext>(options =>
+        options.UseNpgsql(builder.Configuration.GetConnectionString("postgres")));
+}
+else
+{
+    // Pass empty connection string to enable EFBundle to work
+    // https://github.com/dotnet/efcore/issues/27325#issuecomment-1028795149
+    builder.Services.AddDbContext<FitAppContext>(options => options.UseNpgsql(""));
+}
+
 builder.Services.AddTransient<IUsersService, UsersService>();
 builder.Services.AddTransient<IWorkoutsService, WorkoutsService>();
-
-builder.Services.AddPooledDbContextFactory<FitAppContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("postgres")));
 
 FirebaseApp.Create(new AppOptions
 {
