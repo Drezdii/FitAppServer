@@ -29,8 +29,6 @@ public class WorkoutsController : ControllerBase
     [Authorize]
     public async Task<IActionResult> ByUserId(string userid)
     {
-        // Compare userid to Token userid here
-        // if userid == userid from token => continue
         var claimsUserId = User.Claims.Single(q => q.Type == "user_id").Value;
 
         var user = await _usersService.GetUserAsync(claimsUserId);
