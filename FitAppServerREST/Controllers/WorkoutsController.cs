@@ -144,6 +144,8 @@ public class WorkoutsController : ControllerBase
 
         await _workoutsService.DeleteWorkoutAsync(workoutid);
 
+        _logger.LogInformation("Deleted workout: {Id}", workoutid);
+
         return Ok();
     }
 
@@ -153,6 +155,8 @@ public class WorkoutsController : ControllerBase
     public async Task<IActionResult> AddProgramCycle(ProgramCycleDto programCycle)
     {
         var claimsUserId = User.Claims.Single(q => q.Type == "user_id").Value;
+
+        _logger.LogDebug("Adding program to user: ${UserId}", claimsUserId);
 
         var user = await _usersService.GetUserAsync(claimsUserId);
 
@@ -165,6 +169,8 @@ public class WorkoutsController : ControllerBase
         {
             return Forbid();
         }
+
+        _logger.LogDebug("Adding program passed checks");
 
         // Map workouts to model objects
         var workoutsByWeek =
