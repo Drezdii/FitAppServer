@@ -28,7 +28,6 @@ builder.Services
 
 JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
 
-
 builder.Services.AddAuthorization();
 
 builder.Services.AddScoped<IWorkoutsService, WorkoutsService>();
@@ -46,9 +45,8 @@ else
 {
     // Pass empty connection string to enable EFBundle to work
     // https://github.com/dotnet/efcore/issues/27325#issuecomment-1028795149
-    builder.Services.AddDbContext<FitAppContext>(options => options.UseNpgsql(""));
+    builder.Services.AddDbContext<FitAppContext>(options => options.UseNpgsql("empty_string"));
 }
-
 
 builder.Services.AddControllers();
 
