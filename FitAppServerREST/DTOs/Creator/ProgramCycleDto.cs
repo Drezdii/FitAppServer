@@ -1,6 +1,4 @@
-﻿using System.Text.Json.Serialization;
-
-namespace FitAppServerREST.DTOs.Creator;
+﻿namespace FitAppServerREST.DTOs.Creator;
 
 public class ProgramCycleDto
 {

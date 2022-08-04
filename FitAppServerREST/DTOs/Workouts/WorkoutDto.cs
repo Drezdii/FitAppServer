@@ -11,5 +11,5 @@ public class WorkoutDto
     public DateTime? EndDate { get; set; }
     public WorkoutTypeCode Type { get; set; } = WorkoutTypeCode.None;
     public List<ExerciseDto> Exercises { get; set; } = new();
-    public WorkoutProgramDetailsDto? Program { get; set; }
+    public WorkoutProgramDetailsDto? WorkoutProgramDetails { get; set; }
 }

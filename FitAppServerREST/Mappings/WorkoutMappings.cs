@@ -39,7 +39,7 @@ public static class WorkoutMappings
             EndDate = workout.EndDate,
             Type = workout.Type,
             Exercises = exercises,
-            Program = workout.WorkoutProgramDetails?.ToDto()
+            WorkoutProgramDetails = workout.WorkoutProgramDetails?.ToDto()
         };
     }
 

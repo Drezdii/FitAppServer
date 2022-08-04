@@ -156,7 +156,7 @@ public class WorkoutsController : ControllerBase
     {
         var claimsUserId = User.Claims.Single(q => q.Type == "user_id").Value;
 
-        _logger.LogDebug("Adding program to user: ${UserId}", claimsUserId);
+        _logger.LogInformation("Adding program to user: {UserId}", claimsUserId);
 
         var user = await _usersService.GetUserAsync(claimsUserId);
 
@@ -169,8 +169,6 @@ public class WorkoutsController : ControllerBase
         {
             return Forbid();
         }
-
-        _logger.LogDebug("Adding program passed checks");
 
         // Map workouts to model objects
         var workoutsByWeek =
@@ -187,6 +185,12 @@ public class WorkoutsController : ControllerBase
 
         var res = await _workoutsService.AddProgramCycle(cycle);
 
-        return Ok(res.ToString());
+        // Map the dictionary to a dictionary of DTOs
+        var mappedResult = res.Select(q => q)
+            .ToDictionary(q => q.Key,
+                q => q.Value.Select(a => a.ToDto()).ToList());
+
+
+        return Ok(new {workoutsByWeek = mappedResult});
     }
 }
