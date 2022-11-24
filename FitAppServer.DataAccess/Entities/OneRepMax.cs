@@ -8,4 +8,7 @@ public class OneRepMax
     public int UserId { get; set; }
     public Set Set { get; set; } = null!;
     public int SetId { get; set; }
+
+    public ExerciseInfo ExerciseInfo { get; set; } = null!;
+    public int ExerciseInfoId { get; set; }
 }

@@ -70,6 +70,9 @@ namespace FitAppServer.DataAccess.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<int>("ExerciseInfoId")
+                        .HasColumnType("integer");
+
                     b.Property<int>("SetId")
                         .HasColumnType("integer");
 
@@ -80,6 +83,8 @@ namespace FitAppServer.DataAccess.Migrations
                         .HasColumnType("real");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ExerciseInfoId");
 
                     b.HasIndex("SetId");
 
@@ -237,6 +242,10 @@ namespace FitAppServer.DataAccess.Migrations
 
             modelBuilder.Entity("FitAppServer.DataAccess.Entities.OneRepMax", b =>
                 {
+                    b.HasOne("FitAppServer.DataAccess.Entities.ExerciseInfo", "ExerciseInfo")
+                        .WithMany("OneRepMaxes")
+                        .HasForeignKey("ExerciseInfoId");
+
                     b.HasOne("FitAppServer.DataAccess.Entities.Set", "Set")
                         .WithMany()
                         .HasForeignKey("SetId")
@@ -248,6 +257,8 @@ namespace FitAppServer.DataAccess.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("ExerciseInfo");
 
                     b.Navigation("Set");
 
@@ -301,6 +312,8 @@ namespace FitAppServer.DataAccess.Migrations
             modelBuilder.Entity("FitAppServer.DataAccess.Entities.ExerciseInfo", b =>
                 {
                     b.Navigation("Exercises");
+
+                    b.Navigation("OneRepMaxes");
                 });
 
             modelBuilder.Entity("FitAppServer.DataAccess.Entities.User", b =>

@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using FitAppServer.DataAccess;
 using FitAppServer.DataAccess.Entities;
+using FitAppServer.Services.Achievements;
 using FitAppServer.Services.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -13,16 +14,14 @@ public class WorkoutsService : IWorkoutsService
 {
     private readonly FitAppContext _context;
     private readonly ILogger<WorkoutsService> _logger;
+    private readonly IAchievementsManager _achievementsManager;
 
-    public WorkoutsService(FitAppContext context, ILogger<WorkoutsService> logger)
+    public WorkoutsService(FitAppContext context, ILogger<WorkoutsService> logger,
+        IAchievementsManager achievementsManager)
     {
         _context = context;
         _logger = logger;
-    }
-
-    public ValueTask DisposeAsync()
-    {
-        return _context.DisposeAsync();
+        _achievementsManager = achievementsManager;
     }
 
     public async Task<ICollection<Workout>> GetByUserIdAsync(string userid)
@@ -73,6 +72,7 @@ public class WorkoutsService : IWorkoutsService
             _context.Entry(workout.User).State = EntityState.Unchanged;
 
             await _context.SaveChangesAsync();
+            await _achievementsManager.Notify(Action.WorkoutCreated, workout);
             return workout;
         }
 
@@ -85,7 +85,10 @@ public class WorkoutsService : IWorkoutsService
 
         var setsIds = new List<int>();
 
-        foreach (var ex in workout.Exercises) setsIds.AddRange(ex.Sets.Select(q => q.Id).ToList());
+        foreach (var ex in workout.Exercises)
+        {
+            setsIds.AddRange(ex.Sets.Select(q => q.Id).ToList());
+        }
 
         // Load all exercises in this workout at once
         var allExistingExercises = await _context.Exercises.Where(q => q.Workout.Id == workout.Id)
@@ -102,6 +105,7 @@ public class WorkoutsService : IWorkoutsService
         _context.Sets.RemoveRange(missingSets);
 
         await _context.SaveChangesAsync();
+        await _achievementsManager.Notify(Action.WorkoutCreated, workout);
         return workout;
     }
 

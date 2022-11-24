@@ -67,11 +67,6 @@ public class WorkoutsController : ControllerBase
             return BadRequest();
         }
 
-        if (user.Uuid != claimsUserId)
-        {
-            return Forbid();
-        }
-
         wrk.User = user;
 
         // Perform these checks only for existing workouts

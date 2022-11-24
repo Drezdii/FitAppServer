@@ -2,6 +2,8 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Text.Json.Serialization;
 using FitAppServer.DataAccess;
 using FitAppServer.Services;
+using FitAppServer.Services.Achievements;
+using FitAppServer.Services.Achievements.Services;
 using FitAppServerREST.Utils;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.HttpOverrides;
@@ -34,6 +36,7 @@ builder.Services.AddScoped<IWorkoutsService, WorkoutsService>();
 builder.Services.AddScoped<IAchievementsService, AchievementsService>();
 builder.Services.AddScoped<IAchievementsManager, AchievementsManager>();
 builder.Services.AddScoped<IUsersService, UsersService>();
+builder.Services.AddScoped<OneRepMaxService>();
 
 // Check if this actually works
 if (builder.Configuration.GetConnectionString("postgres") != null)

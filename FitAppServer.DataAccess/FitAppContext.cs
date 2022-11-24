@@ -39,5 +39,10 @@ public class FitAppContext : DbContext
             .HasMany(e => e.Sets)
             .WithOne(s => s.Exercise)
             .IsRequired();
+
+        modelBuilder.Entity<ExerciseInfo>()
+            .HasMany(e => e.OneRepMaxes)
+            .WithOne(s => s.ExerciseInfo)
+            .IsRequired(false);
     }
 }
