@@ -17,7 +17,7 @@ public class OneRepMaxService
         _context = context;
     }
 
-    public async Task<bool> OnWorkoutCreated(Workout workout)
+    public async Task<bool> OnWorkoutChanged(Workout workout)
     {
         var oneRepMaxes = await _context.OneRepMaxes
             .Include(q => q.ExerciseInfo)
@@ -39,26 +39,31 @@ public class OneRepMaxService
 
         foreach (var group in setsGroups)
         {
+            // Get one rep max from the set with the highest one rep max
+            var newMax = GetOneRepMaxFromSet(group.SelectMany(q => q)
+                // Always get the last set in case of multiple sets having the same 1RM
+                .OrderByDescending(q => q.Id)
+                .MaxBy(CalculateOneRepMax));
+
+            newMax.User = workout.User;
+            newMax.ExerciseInfoId = group.Key;
+
             if (oneRepMaxes.ContainsKey(group.Key))
             {
                 var currentMax = oneRepMaxes[group.Key];
 
-                // Get one rep max from the set with the highest one rep max
-                var newMax = GetOneRepMaxFromSet(group.SelectMany(q => q)
-                    // Always get the last set in case of multiple sets having the same 1RM
-                    .OrderByDescending(q => q.Id)
-                    .MaxBy(CalculateOneRepMax));
-
                 if (newMax.Value > currentMax.Value)
                 {
-                    newMax.User = workout.User;
-                    newMax.ExerciseInfo = newMax.Set.Exercise.ExerciseInfo;
                     newMaxes.Add(newMax);
                 }
             }
-
-            _context.OneRepMaxes.AddRange(newMaxes);
+            else
+            {
+                newMaxes.Add(newMax);
+            }
         }
+
+        _context.OneRepMaxes.AddRange(newMaxes);
 
         // 1RM = weight * (1 + (number of reps/ 30))
         return true;

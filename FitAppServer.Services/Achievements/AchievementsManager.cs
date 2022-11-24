@@ -28,7 +28,7 @@ public class AchievementsManager : IAchievementsManager
         switch (action)
         {
             case Action.WorkoutCreated:
-                await _oneRepMaxService.OnWorkoutCreated(workout);
+                await _oneRepMaxService.OnWorkoutChanged(workout);
                 // Add other services that should react to this action
                 break;
             default:
