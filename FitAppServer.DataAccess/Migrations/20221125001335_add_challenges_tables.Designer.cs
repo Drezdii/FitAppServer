@@ -3,6 +3,7 @@ using System;
 using FitAppServer.DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,10 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace FitAppServer.DataAccess.Migrations
 {
     [DbContext(typeof(FitAppContext))]
-    partial class FitAppContextModelSnapshot : ModelSnapshot
+    [Migration("20221125001335_add_challenges_tables")]
+    partial class add_challenges_tables
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -46,9 +48,6 @@ namespace FitAppServer.DataAccess.Migrations
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<string>("Unit")
-                        .HasColumnType("text");
-
                     b.HasKey("Id");
 
                     b.ToTable("Challenges");
@@ -65,8 +64,8 @@ namespace FitAppServer.DataAccess.Migrations
                     b.Property<int>("ChallengeId")
                         .HasColumnType("integer");
 
-                    b.Property<DateOnly?>("CompletedAt")
-                        .HasColumnType("date");
+                    b.Property<bool>("Completed")
+                        .HasColumnType("boolean");
 
                     b.Property<int>("UserId")
                         .HasColumnType("integer");
@@ -280,13 +279,13 @@ namespace FitAppServer.DataAccess.Migrations
             modelBuilder.Entity("FitAppServer.DataAccess.Entities.ChallengeEntry", b =>
                 {
                     b.HasOne("FitAppServer.DataAccess.Entities.Challenge", "Challenge")
-                        .WithMany("ChallengeEntries")
+                        .WithMany()
                         .HasForeignKey("ChallengeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("FitAppServer.DataAccess.Entities.User", "User")
-                        .WithMany("ChallengeEntries")
+                        .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -373,11 +372,6 @@ namespace FitAppServer.DataAccess.Migrations
                     b.Navigation("Program");
                 });
 
-            modelBuilder.Entity("FitAppServer.DataAccess.Entities.Challenge", b =>
-                {
-                    b.Navigation("ChallengeEntries");
-                });
-
             modelBuilder.Entity("FitAppServer.DataAccess.Entities.Exercise", b =>
                 {
                     b.Navigation("Sets");
@@ -390,8 +384,6 @@ namespace FitAppServer.DataAccess.Migrations
 
             modelBuilder.Entity("FitAppServer.DataAccess.Entities.User", b =>
                 {
-                    b.Navigation("ChallengeEntries");
-
                     b.Navigation("Maxes");
 
                     b.Navigation("Workouts");

@@ -1,7 +1,6 @@
 ﻿using FitAppServer.DataAccess.Entities;
-using Microsoft.Extensions.Logging;
 
-namespace FitAppServer.Services;
+namespace FitAppServerREST.Services;
 
 public class AchievementsManager : IAchievementsManager
 {

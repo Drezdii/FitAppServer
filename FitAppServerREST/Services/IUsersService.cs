@@ -1,8 +1,7 @@
-﻿using System.Threading.Tasks;
-using FitAppServer.DataAccess.Entities;
-using FitAppServer.Services.DTOs.Users;
+﻿using FitAppServer.DataAccess.Entities;
+using FitAppServerREST.DTOs.Users;
 
-namespace FitAppServer.Services;
+namespace FitAppServerREST.Services;
 
 public interface IUsersService
 {

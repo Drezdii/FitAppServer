@@ -1,7 +1,6 @@
-﻿using System.Collections.Generic;
-using FitAppServer.DataAccess.Entities;
+﻿using FitAppServer.DataAccess.Entities;
 
-namespace FitAppServer.Services.Models;
+namespace FitAppServerREST.Models;
 
 public class ProgramCycle
 {

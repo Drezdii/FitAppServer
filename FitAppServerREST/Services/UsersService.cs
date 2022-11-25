@@ -1,13 +1,11 @@
-﻿using System;
-using System.Threading.Tasks;
-using FirebaseAdmin.Auth;
+﻿using FirebaseAdmin.Auth;
 using FitAppServer.DataAccess;
 using FitAppServer.DataAccess.Entities;
-using FitAppServer.Services.DTOs.Users;
+using FitAppServerREST.DTOs.Users;
 using Microsoft.EntityFrameworkCore;
-using AuthErrorCode = FitAppServer.Services.Models.AuthErrorCode;
+using AuthErrorCode = FitAppServerREST.Models.AuthErrorCode;
 
-namespace FitAppServer.Services;
+namespace FitAppServerREST.Services;
 
 public class UsersService : IUsersService, IAsyncDisposable
 {

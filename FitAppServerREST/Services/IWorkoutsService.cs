@@ -1,9 +1,7 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-using FitAppServer.DataAccess.Entities;
-using FitAppServer.Services.Models;
+﻿using FitAppServer.DataAccess.Entities;
+using FitAppServerREST.Models;
 
-namespace FitAppServer.Services;
+namespace FitAppServerREST.Services;
 
 public interface IWorkoutsService
 {

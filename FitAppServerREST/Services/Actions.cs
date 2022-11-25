@@ -1,4 +1,4 @@
-﻿namespace FitAppServer.Services;
+﻿namespace FitAppServerREST.Services;
 
 public enum Actions
 {

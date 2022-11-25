@@ -3,6 +3,7 @@ using System;
 using FitAppServer.DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,10 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace FitAppServer.DataAccess.Migrations
 {
     [DbContext(typeof(FitAppContext))]
-    partial class FitAppContextModelSnapshot : ModelSnapshot
+    [Migration("20221125000228_add_challenges")]
+    partial class add_challenges
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,67 +23,6 @@ namespace FitAppServer.DataAccess.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
-
-            modelBuilder.Entity("FitAppServer.DataAccess.Entities.Challenge", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("DescriptionTranslationKey")
-                        .HasColumnType("text");
-
-                    b.Property<DateTime?>("EndDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<float>("Goal")
-                        .HasColumnType("real");
-
-                    b.Property<string>("NameTranslationKey")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<DateTime>("StartDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("Unit")
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Challenges");
-                });
-
-            modelBuilder.Entity("FitAppServer.DataAccess.Entities.ChallengeEntry", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("ChallengeId")
-                        .HasColumnType("integer");
-
-                    b.Property<DateOnly?>("CompletedAt")
-                        .HasColumnType("date");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("integer");
-
-                    b.Property<float>("Value")
-                        .HasColumnType("real");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ChallengeId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("ChallengeEntries");
-                });
 
             modelBuilder.Entity("FitAppServer.DataAccess.Entities.Exercise", b =>
                 {
@@ -277,25 +218,6 @@ namespace FitAppServer.DataAccess.Migrations
                     b.ToTable("WorkoutProgramDetails");
                 });
 
-            modelBuilder.Entity("FitAppServer.DataAccess.Entities.ChallengeEntry", b =>
-                {
-                    b.HasOne("FitAppServer.DataAccess.Entities.Challenge", "Challenge")
-                        .WithMany("ChallengeEntries")
-                        .HasForeignKey("ChallengeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("FitAppServer.DataAccess.Entities.User", "User")
-                        .WithMany("ChallengeEntries")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Challenge");
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("FitAppServer.DataAccess.Entities.Exercise", b =>
                 {
                     b.HasOne("FitAppServer.DataAccess.Entities.ExerciseInfo", "ExerciseInfo")
@@ -373,11 +295,6 @@ namespace FitAppServer.DataAccess.Migrations
                     b.Navigation("Program");
                 });
 
-            modelBuilder.Entity("FitAppServer.DataAccess.Entities.Challenge", b =>
-                {
-                    b.Navigation("ChallengeEntries");
-                });
-
             modelBuilder.Entity("FitAppServer.DataAccess.Entities.Exercise", b =>
                 {
                     b.Navigation("Sets");
@@ -390,8 +307,6 @@ namespace FitAppServer.DataAccess.Migrations
 
             modelBuilder.Entity("FitAppServer.DataAccess.Entities.User", b =>
                 {
-                    b.Navigation("ChallengeEntries");
-
                     b.Navigation("Maxes");
 
                     b.Navigation("Workouts");

@@ -1,4 +1,4 @@
-﻿namespace FitAppServer.Services.DTOs.Users;
+﻿namespace FitAppServerREST.DTOs.Users;
 
 public class NewUser
 {

@@ -1,6 +1,6 @@
-﻿using FitAppServer.Services.Models;
+﻿using FitAppServerREST.Models;
 
-namespace FitAppServer.Services.DTOs.Users;
+namespace FitAppServerREST.DTOs.Users;
 
 public class UserRegisterResult
 {

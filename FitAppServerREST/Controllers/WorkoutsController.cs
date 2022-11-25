@@ -1,9 +1,9 @@
 ﻿using FitAppServer.DataAccess.Entities;
-using FitAppServer.Services;
-using FitAppServer.Services.Models;
 using FitAppServerREST.DTOs.Creator;
 using FitAppServerREST.DTOs.Workouts;
 using FitAppServerREST.Mappings;
+using FitAppServerREST.Models;
+using FitAppServerREST.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

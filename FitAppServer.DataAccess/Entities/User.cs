@@ -15,4 +15,5 @@ public class User
     public ICollection<Workout> Workouts { get; set; } = null!;
 
     public ICollection<OneRepMax> Maxes { get; set; } = null!;
+    public ICollection<ChallengeEntry> ChallengeEntries { get; set; } = null!;
 }
