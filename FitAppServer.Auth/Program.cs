@@ -1,6 +1,6 @@
 using FirebaseAdmin;
 using FitAppServer.DataAccess;
-using FitAppServer.Services;
+using FitAppServerREST.Services;
 using Google.Apis.Auth.OAuth2;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.HttpOverrides;

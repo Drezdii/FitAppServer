@@ -1,4 +1,4 @@
-﻿using FitAppServer.Services.Models;
+﻿using FitAppServerREST.Models;
 
 namespace FitAppServer.Auth.DTOs;
 

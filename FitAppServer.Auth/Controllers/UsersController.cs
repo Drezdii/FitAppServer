@@ -1,7 +1,7 @@
 ﻿using FitAppServer.Auth.DTOs;
-using FitAppServer.Services;
-using FitAppServer.Services.DTOs.Users;
-using FitAppServer.Services.Models;
+using FitAppServerREST.DTOs.Users;
+using FitAppServerREST.Models;
+using FitAppServerREST.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FitAppServer.Auth.Controllers;
