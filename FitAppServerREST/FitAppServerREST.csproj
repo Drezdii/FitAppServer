@@ -13,7 +13,8 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\FitAppServer.Services\FitAppServer.Services.csproj" />
+      <ProjectReference Include="..\FitAppServer.DataAccess\FitAppServer.DataAccess.csproj" />
+      <ProjectReference Include="..\FitAppServer.Services\FitAppServer.Services.csproj" />
     </ItemGroup>
 
 </Project>

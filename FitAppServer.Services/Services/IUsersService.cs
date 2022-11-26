@@ -1,7 +1,7 @@
 ﻿using FitAppServer.DataAccess.Entities;
-using FitAppServerREST.DTOs.Users;
+using FitAppServer.Services.DTOs.Users;
 
-namespace FitAppServerREST.Services;
+namespace FitAppServer.Services.Services;
 
 public interface IUsersService
 {

@@ -4,7 +4,7 @@ WORKDIR /app
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
 COPY ["FitAppServer.Auth/FitAppServer.Auth.csproj", "FitAppServer.Auth/"]
-COPY ["FitAppServerREST/FitAppServerREST.csproj", "FitAppServerREST/"]
+COPY ["FitAppServer.Services/FitAppServer.Services.csproj", "FitAppServer.Services/"]
 RUN dotnet restore "FitAppServer.Auth/FitAppServer.Auth.csproj"
 COPY . .
 WORKDIR "/src/FitAppServer.Auth"

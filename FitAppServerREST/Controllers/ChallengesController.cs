@@ -1,4 +1,4 @@
-﻿using FitAppServerREST.Services;
+﻿using FitAppServer.Services.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

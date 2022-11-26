@@ -1,9 +1,9 @@
 ﻿using FitAppServer.DataAccess.Entities;
 
-namespace FitAppServerREST.Services;
+namespace FitAppServer.Services.Services;
 
 public interface IChallengesService
 {
-    List<OneRepMax> GetOneRepMaxesByUserId(string userid);
+    Task<ICollection<OneRepMax>> GetOneRepMaxesByUserId(string userid);
     List<ChallengeEntry> GetChallengesByUserId(string userid);
 }

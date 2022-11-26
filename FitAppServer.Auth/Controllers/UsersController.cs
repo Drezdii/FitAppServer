@@ -1,7 +1,7 @@
 ﻿using FitAppServer.Auth.DTOs;
-using FitAppServerREST.DTOs.Users;
-using FitAppServerREST.Models;
-using FitAppServerREST.Services;
+using FitAppServer.Services.DTOs.Users;
+using FitAppServer.Services.Models;
+using FitAppServer.Services.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FitAppServer.Auth.Controllers;
@@ -85,7 +85,7 @@ public class UsersController : ControllerBase
         }
 
         // Return model validation errors
-        if (errors.Count > 0) return BadRequest(new {errors});
+        if (errors.Count > 0) return BadRequest(new { errors });
 
         var usr = new NewUser
         {
@@ -105,7 +105,7 @@ public class UsersController : ControllerBase
                 ErrorCode = res.ErrorCode
             });
 
-        if (errors.Count > 0) return BadRequest(new {errors});
+        if (errors.Count > 0) return BadRequest(new { errors });
 
 
         return CreatedAtRoute("GetUserAsync", new

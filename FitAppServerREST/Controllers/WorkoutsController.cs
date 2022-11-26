@@ -1,9 +1,9 @@
 ﻿using FitAppServer.DataAccess.Entities;
+using FitAppServer.Services.Models;
+using FitAppServer.Services.Services;
 using FitAppServerREST.DTOs.Creator;
 using FitAppServerREST.DTOs.Workouts;
 using FitAppServerREST.Mappings;
-using FitAppServerREST.Models;
-using FitAppServerREST.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -173,7 +173,7 @@ public class WorkoutsController : ControllerBase
         // Map workouts to model objects
         var workoutsByWeek =
             programCycle.WorkoutsByWeek.ToDictionary(q => q.Key,
-                q => (IReadOnlyCollection<Workout>) q.Value.Select(w => w.ToModel()).ToList());
+                q => (IReadOnlyCollection<Workout>)q.Value.Select(w => w.ToModel()).ToList());
 
 
         var cycle = new ProgramCycle
@@ -191,6 +191,6 @@ public class WorkoutsController : ControllerBase
                 q => q.Value.Select(a => a.ToDto()).ToList());
 
 
-        return Ok(new {workoutsByWeek = mappedResult});
+        return Ok(new { workoutsByWeek = mappedResult });
     }
 }

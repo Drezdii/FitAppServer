@@ -1,4 +1,4 @@
-﻿namespace FitAppServerREST.Models;
+﻿namespace FitAppServer.Services.Models;
 
 public enum AuthErrorCode
 {

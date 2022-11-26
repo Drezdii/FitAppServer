@@ -1,9 +1,10 @@
 ﻿using FitAppServer.DataAccess;
 using FitAppServer.DataAccess.Entities;
-using FitAppServerREST.Models;
+using FitAppServer.Services.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
-namespace FitAppServerREST.Services;
+namespace FitAppServer.Services.Services;
 
 public class WorkoutsService : IWorkoutsService
 {

@@ -1,7 +1,7 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Text.Json.Serialization;
 using FitAppServer.DataAccess;
-using FitAppServerREST.Services;
+using FitAppServer.Services.Services;
 using FitAppServerREST.Utils;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.HttpOverrides;
@@ -32,7 +32,7 @@ builder.Services.AddAuthorization();
 
 builder.Services.AddScoped<IWorkoutsService, WorkoutsService>();
 builder.Services.AddScoped<IAchievementsService, AchievementsService>();
-builder.Services.AddScoped<IAchievementsManager, AchievementsManager>();
+builder.Services.AddScoped<IChallengesManager, ChallengesManager>();
 builder.Services.AddScoped<IUsersService, UsersService>();
 
 // Check if this actually works
