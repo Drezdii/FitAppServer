@@ -1,20 +1,26 @@
 ﻿using FitAppServer.DataAccess;
 using FitAppServer.DataAccess.Entities;
+using FitAppServer.Services.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace FitAppServer.Services.Services;
+namespace FitAppServer.Services.Services.Challenges;
 
-public class OneRepMaxService
+public class OneRepMaxChallenge : IChallenge
 {
     private readonly FitAppContext _context;
 
-    public OneRepMaxService(FitAppContext context)
+    public OneRepMaxChallenge(FitAppContext context)
     {
         _context = context;
     }
 
-    public async Task<bool> OnWorkoutChanged(Workout workout)
+    public async Task Check(WorkoutAction action, Workout payload)
     {
+        if (action is not WorkoutAction.Created and not WorkoutAction.Updated)
+        {
+            return;
+        }
+
         var oneRepMaxes = await _context.OneRepMaxes
             .Include(q => q.ExerciseInfo)
             .GroupBy(p => p.ExerciseInfo.Id)
@@ -23,9 +29,10 @@ public class OneRepMaxService
             ).ToDictionaryAsync(q => q.ExerciseInfo.Id);
 
         // Group sets into groups of <ExerciseInfoId, List<Set>>
-        var setsGroups = workout.Exercises
+        var setsGroups = payload.Exercises
             .GroupBy(q => q.ExerciseInfoId)
             .ToLookup(group => group.Key, group => group.Select(ex => ex.Sets).SelectMany(sets => sets)
+                .Where(q => q.Completed)
                 .ToList());
 
         // var maxes = setsGroups.ToLookup(group => group.Key,
@@ -41,7 +48,7 @@ public class OneRepMaxService
                 .OrderByDescending(q => q.Id)
                 .MaxBy(CalculateOneRepMax));
 
-            newMax.User = workout.User;
+            newMax.User = payload.User;
             newMax.ExerciseInfoId = group.Key;
 
             if (oneRepMaxes.ContainsKey(group.Key))
@@ -62,7 +69,6 @@ public class OneRepMaxService
         _context.OneRepMaxes.AddRange(newMaxes);
 
         // 1RM = weight * (1 + (number of reps/ 30))
-        return true;
     }
 
     private OneRepMax GetOneRepMaxFromSet(Set set)
@@ -78,4 +84,6 @@ public class OneRepMaxService
     {
         return (int) Math.Round(set.Weight / (1.0278 - (0.0278 * set.Reps)), 0);
     }
+
+    public string GetId() => "oneRepMaxChallenge";
 }

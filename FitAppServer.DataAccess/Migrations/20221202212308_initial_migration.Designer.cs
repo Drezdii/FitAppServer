@@ -12,25 +12,23 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace FitAppServer.DataAccess.Migrations
 {
     [DbContext(typeof(FitAppContext))]
-    [Migration("20221125001335_add_challenges_tables")]
-    partial class add_challenges_tables
+    [Migration("20221202212308_initial_migration")]
+    partial class initialmigration
     {
+        /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.1")
+                .HasAnnotation("ProductVersion", "7.0.0")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
             modelBuilder.Entity("FitAppServer.DataAccess.Entities.Challenge", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    b.Property<string>("Id")
+                        .HasColumnType("text");
 
                     b.Property<string>("DescriptionTranslationKey")
                         .HasColumnType("text");
@@ -48,6 +46,9 @@ namespace FitAppServer.DataAccess.Migrations
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<string>("Unit")
+                        .HasColumnType("text");
+
                     b.HasKey("Id");
 
                     b.ToTable("Challenges");
@@ -55,29 +56,21 @@ namespace FitAppServer.DataAccess.Migrations
 
             modelBuilder.Entity("FitAppServer.DataAccess.Entities.ChallengeEntry", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("ChallengeId")
-                        .HasColumnType("integer");
-
-                    b.Property<bool>("Completed")
-                        .HasColumnType("boolean");
-
                     b.Property<int>("UserId")
                         .HasColumnType("integer");
+
+                    b.Property<string>("ChallengeId")
+                        .HasColumnType("text");
+
+                    b.Property<DateOnly?>("CompletedAt")
+                        .HasColumnType("date");
 
                     b.Property<float>("Value")
                         .HasColumnType("real");
 
-                    b.HasKey("Id");
+                    b.HasKey("UserId", "ChallengeId");
 
                     b.HasIndex("ChallengeId");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("ChallengeEntries");
                 });
@@ -130,6 +123,9 @@ namespace FitAppServer.DataAccess.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<int>("ExerciseInfoId")
+                        .HasColumnType("integer");
+
                     b.Property<int>("SetId")
                         .HasColumnType("integer");
 
@@ -140,6 +136,8 @@ namespace FitAppServer.DataAccess.Migrations
                         .HasColumnType("real");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ExerciseInfoId");
 
                     b.HasIndex("SetId");
 
@@ -279,13 +277,13 @@ namespace FitAppServer.DataAccess.Migrations
             modelBuilder.Entity("FitAppServer.DataAccess.Entities.ChallengeEntry", b =>
                 {
                     b.HasOne("FitAppServer.DataAccess.Entities.Challenge", "Challenge")
-                        .WithMany()
+                        .WithMany("ChallengeEntries")
                         .HasForeignKey("ChallengeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("FitAppServer.DataAccess.Entities.User", "User")
-                        .WithMany()
+                        .WithMany("ChallengeEntries")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -316,6 +314,12 @@ namespace FitAppServer.DataAccess.Migrations
 
             modelBuilder.Entity("FitAppServer.DataAccess.Entities.OneRepMax", b =>
                 {
+                    b.HasOne("FitAppServer.DataAccess.Entities.ExerciseInfo", "ExerciseInfo")
+                        .WithMany()
+                        .HasForeignKey("ExerciseInfoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("FitAppServer.DataAccess.Entities.Set", "Set")
                         .WithMany()
                         .HasForeignKey("SetId")
@@ -327,6 +331,8 @@ namespace FitAppServer.DataAccess.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("ExerciseInfo");
 
                     b.Navigation("Set");
 
@@ -372,6 +378,11 @@ namespace FitAppServer.DataAccess.Migrations
                     b.Navigation("Program");
                 });
 
+            modelBuilder.Entity("FitAppServer.DataAccess.Entities.Challenge", b =>
+                {
+                    b.Navigation("ChallengeEntries");
+                });
+
             modelBuilder.Entity("FitAppServer.DataAccess.Entities.Exercise", b =>
                 {
                     b.Navigation("Sets");
@@ -384,6 +395,8 @@ namespace FitAppServer.DataAccess.Migrations
 
             modelBuilder.Entity("FitAppServer.DataAccess.Entities.User", b =>
                 {
+                    b.Navigation("ChallengeEntries");
+
                     b.Navigation("Maxes");
 
                     b.Navigation("Workouts");

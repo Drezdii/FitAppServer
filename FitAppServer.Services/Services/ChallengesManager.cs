@@ -14,15 +14,15 @@ public class ChallengesManager : IChallengesManager
     public ChallengesManager(FitAppContext context)
     {
         _context = context;
-        // Somehow add all challenges to _challenges list here
         _challenges.Add(new NumberOfWorkoutsChallenge(context));
+        _challenges.Add(new OneRepMaxChallenge(context));
     }
 
     public async Task Notify(WorkoutAction action, Workout payload)
     {
         foreach (var challenge in _challenges)
         {
-            challenge.Check(action, payload);
+            await challenge.Check(action, payload);
         }
 
         // Save all changes made by different challenges

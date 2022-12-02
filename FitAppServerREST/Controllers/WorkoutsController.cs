@@ -16,12 +16,15 @@ public class WorkoutsController : ControllerBase
     private readonly ILogger _logger;
     private readonly IUsersService _usersService;
     private readonly IWorkoutsService _workoutsService;
+    private readonly IChallengesManager _challengesManager;
 
-    public WorkoutsController(IWorkoutsService service, IUsersService usersService, ILogger<WorkoutsController> logger)
+    public WorkoutsController(IWorkoutsService service, IUsersService usersService, ILogger<WorkoutsController> logger,
+        IChallengesManager challengesManager)
     {
         _workoutsService = service;
         _usersService = usersService;
         _logger = logger;
+        _challengesManager = challengesManager;
     }
 
     [HttpGet]
@@ -61,6 +64,7 @@ public class WorkoutsController : ControllerBase
         var wrk = workout.ToModel();
 
         var user = await _usersService.GetUserAsync(claimsUserId);
+        var isNewWorkout = true;
 
         if (user == null)
         {
@@ -77,6 +81,7 @@ public class WorkoutsController : ControllerBase
         // Perform these checks only for existing workouts
         if (wrk.Id > 0)
         {
+            isNewWorkout = false;
             var existingWorkout = await _workoutsService.GetByWorkoutIdAsync(wrk.Id);
 
             if (existingWorkout == null)
@@ -91,7 +96,9 @@ public class WorkoutsController : ControllerBase
             }
         }
 
+
         var res = await _workoutsService.AddOrUpdateWorkoutAsync(wrk);
+        await _challengesManager.Notify(isNewWorkout ? WorkoutAction.Created : WorkoutAction.Updated, wrk);
 
         return Ok(res.ToDto());
     }
@@ -143,6 +150,7 @@ public class WorkoutsController : ControllerBase
         }
 
         await _workoutsService.DeleteWorkoutAsync(workoutid);
+        await _challengesManager.Notify(WorkoutAction.Deleted, existingWorkout);
 
         _logger.LogInformation("Deleted workout: {Id}", workoutid);
 
@@ -173,7 +181,7 @@ public class WorkoutsController : ControllerBase
         // Map workouts to model objects
         var workoutsByWeek =
             programCycle.WorkoutsByWeek.ToDictionary(q => q.Key,
-                q => (IReadOnlyCollection<Workout>)q.Value.Select(w => w.ToModel()).ToList());
+                q => (IReadOnlyCollection<Workout>) q.Value.Select(w => w.ToModel()).ToList());
 
 
         var cycle = new ProgramCycle
@@ -191,6 +199,6 @@ public class WorkoutsController : ControllerBase
                 q => q.Value.Select(a => a.ToDto()).ToList());
 
 
-        return Ok(new { workoutsByWeek = mappedResult });
+        return Ok(new {workoutsByWeek = mappedResult});
     }
 }

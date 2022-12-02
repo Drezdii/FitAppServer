@@ -19,29 +19,25 @@ public class NumberOfWorkoutsChallenge : IChallenge
         if (action is WorkoutAction.Created or WorkoutAction.Deleted)
         {
             var challenge = await _context.ChallengeEntries.FirstOrDefaultAsync(
-                q => q.UserId == payload.UserId && q.Challenge.Id == GetId() && q.CompletedAt != null);
+                q => q.UserId == payload.UserId && q.Challenge.Id == GetId() && q.CompletedAt == null);
 
             if (challenge == null)
             {
                 return;
             }
 
-            int additionValue = 1;
+            var additionValue = 1;
             // Decrease the counter on workout deletion
             if (action == WorkoutAction.Deleted)
             {
                 additionValue = -1;
             }
 
-            var rowsModified = await _context.Database.ExecuteSqlAsync(
-                $"UPDATE [ChallengeEntries] SET [Value] = [Value] + {additionValue} WHERE [UserId] = {challenge.UserId} && [ChallengeId] = {challenge.ChallengeId}");
+            await _context.ChallengeEntries.Where(q => q.UserId == payload.UserId && q.Challenge.Id == GetId())
+                .ExecuteUpdateAsync(q => q.SetProperty(c => c.Value, c => c.Value + additionValue));
         }
     }
 
 
-    // Use those identifiers when setting up the challenges in database when creating a new user
-    public string GetId()
-    {
-        return "numOfCreatedWorkoutsChall";
-    }
+    public string GetId() => "numOfCreatedWorkoutsChallenge";
 }
