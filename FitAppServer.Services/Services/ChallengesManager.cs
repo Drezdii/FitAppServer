@@ -15,7 +15,7 @@ public class ChallengesManager : IChallengesManager
     {
         _context = context;
         // Somehow add all challenges to _challenges list here
-        _challenges.Add(new CreatedWorkoutsChallenge(context));
+        _challenges.Add(new NumberOfWorkoutsChallenge(context));
     }
 
     public async Task Notify(WorkoutAction action, Workout payload)

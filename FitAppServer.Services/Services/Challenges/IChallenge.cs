@@ -5,6 +5,6 @@ namespace FitAppServer.Services.Services.Challenges;
 
 public interface IChallenge
 {
-    void Check(WorkoutAction action, Workout payload);
+    Task Check(WorkoutAction action, Workout payload);
     string GetId();
 }
