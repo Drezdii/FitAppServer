@@ -42,11 +42,18 @@ public class OneRepMaxChallenge : IChallenge
 
         foreach (var group in setsGroups)
         {
-            // Get one rep max from the set with the highest one rep max
-            var newMax = GetOneRepMaxFromSet(group.SelectMany(q => q)
+            var highestSet = group.SelectMany(q => q)
                 // Always get the last set in case of multiple sets having the same 1RM
                 .OrderByDescending(q => q.Id)
-                .MaxBy(CalculateOneRepMax));
+                .MaxBy(CalculateOneRepMax);
+
+            if (highestSet == null)
+            {
+                continue;
+            }
+            
+            // Get one rep max from the set with the highest one rep max
+            var newMax = GetOneRepMaxFromSet(highestSet);
 
             newMax.User = payload.User;
             newMax.ExerciseInfoId = group.Key;
