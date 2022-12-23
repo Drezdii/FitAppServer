@@ -1,4 +1,5 @@
 ﻿using FitAppServer.Services.Services;
+using FitAppServerREST.Mappings;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -44,7 +45,7 @@ public class ChallengesController : ControllerBase
     }
 
     [HttpGet]
-    [Route("challenges/{userid}")]
+    [Route("user/{userid}")]
     [Authorize]
     public async Task<IActionResult> GetChallengesByUserId(string userid)
     {
@@ -62,7 +63,7 @@ public class ChallengesController : ControllerBase
             return Forbid();
         }
 
-        var challenges = _challengesService.GetChallengesByUserId(userid);
-        return Ok(challenges);
+        var challenges = await _challengesService.GetChallengesEntriesByUserId(userid);
+        return Ok(challenges.Select(q => q.ToDto()));
     }
 }

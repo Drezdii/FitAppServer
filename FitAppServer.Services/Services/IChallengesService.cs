@@ -5,5 +5,5 @@ namespace FitAppServer.Services.Services;
 public interface IChallengesService
 {
     Task<ICollection<OneRepMax>> GetOneRepMaxesByUserId(string userid);
-    List<ChallengeEntry> GetChallengesByUserId(string userid);
+    Task<ICollection<ChallengeEntry>> GetChallengesEntriesByUserId(string userid);
 }

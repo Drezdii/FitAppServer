@@ -33,6 +33,7 @@ builder.Services.AddAuthorization();
 builder.Services.AddScoped<IWorkoutsService, WorkoutsService>();
 builder.Services.AddScoped<IAchievementsService, AchievementsService>();
 builder.Services.AddScoped<IChallengesManager, ChallengesManager>();
+builder.Services.AddScoped<IChallengesService, ChallengesService>();
 builder.Services.AddScoped<IUsersService, UsersService>();
 
 // Check if this actually works

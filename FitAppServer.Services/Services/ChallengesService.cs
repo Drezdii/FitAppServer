@@ -17,14 +17,15 @@ public class ChallengesService : IChallengesService
     {
         // Get one rep max for each big lift based on workout date and the id of the one rep max
         return await _context.OneRepMaxes
+            .Where(q => q.User.Uuid == userId)
             .GroupBy(p => p.Set.Exercise.ExerciseInfoId)
             .Select(g => g.OrderByDescending(p => p.Set.Exercise.Workout.Date).ThenByDescending(p => p.Id)
                 .First()
             ).ToListAsync();
     }
 
-    public List<ChallengeEntry> GetChallengesByUserId(string userid)
+    public async Task<ICollection<ChallengeEntry>> GetChallengesEntriesByUserId(string userid)
     {
-        throw new NotImplementedException();
+        return await _context.ChallengeEntries.Where(q => q.User.Uuid == userid).Include(q => q.Challenge).ToListAsync();
     }
 }
