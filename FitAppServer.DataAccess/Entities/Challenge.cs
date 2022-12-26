@@ -5,7 +5,7 @@ namespace FitAppServer.DataAccess.Entities;
 
 public class Challenge
 {
-    public int Id { get; set; }
+    public string Id { get; set; } = null!;
     public string NameTranslationKey { get; set; } = null!;
     public string? DescriptionTranslationKey { get; set; }
     public DateTime StartDate { get; set; }

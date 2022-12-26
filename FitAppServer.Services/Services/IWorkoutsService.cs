@@ -1,7 +1,7 @@
 ﻿using FitAppServer.DataAccess.Entities;
-using FitAppServerREST.Models;
+using FitAppServer.Services.Models;
 
-namespace FitAppServerREST.Services;
+namespace FitAppServer.Services.Services;
 
 public interface IWorkoutsService
 {

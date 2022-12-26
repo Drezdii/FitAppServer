@@ -1,6 +1,6 @@
 ﻿using FitAppServer.DataAccess.Entities;
 
-namespace FitAppServerREST.Services;
+namespace FitAppServer.Services.Services;
 
 public interface IAchievementsService
 {

@@ -6,10 +6,29 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace FitAppServer.DataAccess.Migrations
 {
+    /// <inheritdoc />
     public partial class initialmigration : Migration
     {
+        /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.CreateTable(
+                name: "Challenges",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "text", nullable: false),
+                    NameTranslationKey = table.Column<string>(type: "text", nullable: false),
+                    DescriptionTranslationKey = table.Column<string>(type: "text", nullable: true),
+                    StartDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    EndDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    Goal = table.Column<float>(type: "real", nullable: false),
+                    Unit = table.Column<string>(type: "text", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Challenges", x => x.Id);
+                });
+
             migrationBuilder.CreateTable(
                 name: "ExerciseInfo",
                 columns: table => new
@@ -68,6 +87,32 @@ namespace FitAppServer.DataAccess.Migrations
                         name: "FK_WorkoutProgramDetails_Programs_ProgramId",
                         column: x => x.ProgramId,
                         principalTable: "Programs",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ChallengeEntries",
+                columns: table => new
+                {
+                    UserId = table.Column<int>(type: "integer", nullable: false),
+                    ChallengeId = table.Column<string>(type: "text", nullable: false),
+                    Value = table.Column<float>(type: "real", nullable: false),
+                    CompletedAt = table.Column<DateOnly>(type: "date", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ChallengeEntries", x => new { x.UserId, x.ChallengeId });
+                    table.ForeignKey(
+                        name: "FK_ChallengeEntries_Challenges_ChallengeId",
+                        column: x => x.ChallengeId,
+                        principalTable: "Challenges",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ChallengeEntries_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -157,11 +202,18 @@ namespace FitAppServer.DataAccess.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Value = table.Column<float>(type: "real", nullable: false),
                     UserId = table.Column<int>(type: "integer", nullable: false),
-                    SetId = table.Column<int>(type: "integer", nullable: false)
+                    SetId = table.Column<int>(type: "integer", nullable: false),
+                    ExerciseInfoId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_OneRepMaxes", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_OneRepMaxes_ExerciseInfo_ExerciseInfoId",
+                        column: x => x.ExerciseInfoId,
+                        principalTable: "ExerciseInfo",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_OneRepMaxes_Sets_SetId",
                         column: x => x.SetId,
@@ -177,6 +229,11 @@ namespace FitAppServer.DataAccess.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_ChallengeEntries_ChallengeId",
+                table: "ChallengeEntries",
+                column: "ChallengeId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Exercises_ExerciseInfoId",
                 table: "Exercises",
                 column: "ExerciseInfoId");
@@ -185,6 +242,11 @@ namespace FitAppServer.DataAccess.Migrations
                 name: "IX_Exercises_WorkoutId",
                 table: "Exercises",
                 column: "WorkoutId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_OneRepMaxes_ExerciseInfoId",
+                table: "OneRepMaxes",
+                column: "ExerciseInfoId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_OneRepMaxes_SetId",
@@ -217,10 +279,17 @@ namespace FitAppServer.DataAccess.Migrations
                 column: "WorkoutProgramDetailsId");
         }
 
+        /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "ChallengeEntries");
+
+            migrationBuilder.DropTable(
                 name: "OneRepMaxes");
+
+            migrationBuilder.DropTable(
+                name: "Challenges");
 
             migrationBuilder.DropTable(
                 name: "Sets");

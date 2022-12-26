@@ -1,6 +1,6 @@
 ﻿using FitAppServer.DataAccess.Entities;
 
-namespace FitAppServerREST.Models;
+namespace FitAppServer.Services.Models;
 
 public class ProgramCycle
 {
