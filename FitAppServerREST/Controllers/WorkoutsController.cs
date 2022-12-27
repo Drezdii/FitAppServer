@@ -41,7 +41,7 @@ public class WorkoutsController : ControllerBase
             return BadRequest();
         }
 
-        if (user.Uuid != claimsUserId)
+        if (userid != claimsUserId)
         {
             return Forbid();
         }
@@ -69,11 +69,6 @@ public class WorkoutsController : ControllerBase
         if (user == null)
         {
             return BadRequest();
-        }
-
-        if (user.Uuid != claimsUserId)
-        {
-            return Forbid();
         }
 
         wrk.User = user;
@@ -171,11 +166,6 @@ public class WorkoutsController : ControllerBase
         if (user == null)
         {
             return BadRequest();
-        }
-
-        if (user.Uuid != claimsUserId)
-        {
-            return Forbid();
         }
 
         // Map workouts to model objects

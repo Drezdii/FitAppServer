@@ -35,12 +35,12 @@ public class ChallengesController : ControllerBase
             return BadRequest();
         }
 
-        if (user.Uuid != claimsUserId)
+        if (userid != claimsUserId)
         {
             return Forbid();
         }
 
-        var maxes = _challengesService.GetOneRepMaxesByUserId(userid);
+        var maxes = await _challengesService.GetOneRepMaxesByUserId(userid);
         return Ok(maxes);
     }
 
@@ -58,7 +58,7 @@ public class ChallengesController : ControllerBase
             return BadRequest();
         }
 
-        if (user.Uuid != claimsUserId)
+        if (userid != claimsUserId)
         {
             return Forbid();
         }
