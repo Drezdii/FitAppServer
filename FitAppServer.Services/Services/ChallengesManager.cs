@@ -16,6 +16,11 @@ public class ChallengesManager : IChallengesManager
         _context = context;
         _challenges.Add(new NumberOfWorkoutsChallenge(context));
         _challenges.Add(new OneRepMaxChallenge(context));
+        _challenges.Add(new NumberOfPullupsChallenge(context));
+        _challenges.Add(new DeadliftTotalWeightChallenge(context));
+        _challenges.Add(new SquatTotalWeightChallenge(context));
+        _challenges.Add(new BenchTotalWeightChallenge(context));
+        _challenges.Add(new OHPTotalWeightChallenge(context));
     }
 
     public async Task Notify(WorkoutAction action, Workout payload)

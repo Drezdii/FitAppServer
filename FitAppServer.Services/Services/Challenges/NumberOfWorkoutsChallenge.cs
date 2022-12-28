@@ -43,5 +43,17 @@ public class NumberOfWorkoutsChallenge : IChallenge
     }
 
 
-    public string GetId() => "numOfCreatedWorkoutsChallenge";
+    public string GetId() => "numOfCreatedWorkoutsChallenge2022";
+    public Challenge GetDefinition()
+    {
+        return new Challenge
+        {
+            Id = GetId(),
+            NameTranslationKey = GetId(),
+            DescriptionTranslationKey = "numOfCreatedWorkoutsChallengeDescription",
+            StartDate = new DateTime(2023, 1, 1, 0, 0, 0),
+            EndDate = new DateTime(2023, 12, 31, 23, 59, 59),
+            Goal = 200f
+        };
+    }
 }
