@@ -6,5 +6,6 @@ public enum WorkoutTypeCode
     Deadlift,
     Bench,
     Squat,
-    Ohp
+    Ohp,
+    Pullups
 }

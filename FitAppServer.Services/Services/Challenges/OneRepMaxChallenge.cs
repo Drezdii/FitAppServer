@@ -35,9 +35,6 @@ public class OneRepMaxChallenge : IChallenge
                 .Where(q => q.Completed)
                 .ToList());
 
-        // var maxes = setsGroups.ToLookup(group => group.Key,
-        //     group => group.SelectMany(sets => sets).MaxBy(CalculateOneRepMax));
-
         var newMaxes = new List<OneRepMax>();
 
         foreach (var group in setsGroups)
@@ -93,4 +90,10 @@ public class OneRepMaxChallenge : IChallenge
     }
 
     public string GetId() => "oneRepMaxChallenge";
+    
+    // OneRepMaxChallenge is a special case where it has it's own table and does not have an entry in the Challenges table
+    public Challenge GetDefinition()
+    {
+        return null;
+    }
 }
