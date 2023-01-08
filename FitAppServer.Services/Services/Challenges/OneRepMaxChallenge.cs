@@ -91,7 +91,7 @@ public class OneRepMaxChallenge : IChallenge
 
     public string GetId() => "oneRepMaxChallenge";
     
-    // OneRepMaxChallenge is a special case where it has it's own table and does not have an entry in the ChallengesEntries table
+    // OneRepMaxChallenge is a special case where it has it's own table and does not have an entry in the Challenges table
     public Challenge GetDefinition()
     {
         return null;

@@ -19,8 +19,9 @@ public class DeadliftTotalWeightChallenge : IChallenge
         // TODO: Update this once proper diffing algorithm is implemented for updating/deleting workouts
         var newCount = await _context.Sets.Where(q =>
                 q.Exercise.Workout.UserId == workout.UserId &&
-                q.Exercise.ExerciseInfoId == (int)WorkoutTypeCode.Deadlift)
-            .SumAsync(q => q.Weight);
+                q.Exercise.ExerciseInfoId == (int)WorkoutTypeCode.Deadlift &&
+                q.Completed)
+            .SumAsync(q => q.Reps * q.Weight);
         
         await _context.ChallengeEntries.Where(q => q.UserId == workout.UserId && q.Challenge.Id == GetId())
             .ExecuteUpdateAsync(q => q.SetProperty(c => c.Value, newCount));

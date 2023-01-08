@@ -2,6 +2,7 @@
 using FitAppServer.DataAccess.Entities;
 using FitAppServer.Services.Models;
 using FitAppServer.Services.Services.Challenges;
+using FitAppServer.Services.Services.Challenges.Plates;
 
 namespace FitAppServer.Services.Services;
 
@@ -20,7 +21,8 @@ public class ChallengesManager : IChallengesManager
         _challenges.Add(new DeadliftTotalWeightChallenge(context));
         _challenges.Add(new SquatTotalWeightChallenge(context));
         _challenges.Add(new BenchTotalWeightChallenge(context));
-        _challenges.Add(new OHPTotalWeightChallenge(context));
+        _challenges.Add(new OhpTotalWeightChallenge(context));
+        _challenges.Add(new BenchTwoPlatesChallenge(context));
     }
 
     public async Task Notify(WorkoutAction action, Workout payload)

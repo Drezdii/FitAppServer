@@ -1,6 +1,7 @@
 ﻿using FitAppServer.DataAccess;
 using FitAppServer.DataAccess.Entities;
 using FitAppServer.Services.Models;
+using FitAppServer.Services.Utils;
 using Microsoft.EntityFrameworkCore;
 
 namespace FitAppServer.Services.Services.Challenges;
@@ -8,7 +9,7 @@ namespace FitAppServer.Services.Services.Challenges;
 public class BenchTotalWeightChallenge : IChallenge
 {
     private readonly FitAppContext _context;
-    
+
     public BenchTotalWeightChallenge(FitAppContext context)
     {
         _context = context;
@@ -19,11 +20,18 @@ public class BenchTotalWeightChallenge : IChallenge
         // TODO: Update this once proper diffing algorithm is implemented for updating/deleting workouts
         var newCount = await _context.Sets.Where(q =>
                 q.Exercise.Workout.UserId == workout.UserId &&
-                q.Exercise.ExerciseInfoId == (int)WorkoutTypeCode.Bench)
-            .SumAsync(q => q.Weight);
-        
+                q.Exercise.ExerciseInfoId == (int)WorkoutTypeCode.Bench &&
+                q.Completed)
+            .SumAsync(q => q.Reps * q.Weight);
+
         await _context.ChallengeEntries.Where(q => q.UserId == workout.UserId && q.Challenge.Id == GetId())
             .ExecuteUpdateAsync(q => q.SetProperty(c => c.Value, newCount));
+
+        if (newCount >= GetDefinition().Goal)
+        {
+            await _context.ChallengeEntries.Where(q => q.UserId == workout.UserId && q.Challenge.Id == GetId())
+                .ExecuteUpdateAsync(q => q.SetProperty(c => c.CompletedAt, DateOnlyHelper.DateNow()));
+        }
     }
 
     public string GetId() => "benchTotalWeight2022";
