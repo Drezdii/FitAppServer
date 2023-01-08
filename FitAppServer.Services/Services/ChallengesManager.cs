@@ -23,6 +23,9 @@ public class ChallengesManager : IChallengesManager
         _challenges.Add(new BenchTotalWeightChallenge(context));
         _challenges.Add(new OhpTotalWeightChallenge(context));
         _challenges.Add(new BenchTwoPlatesChallenge(context));
+        _challenges.Add(new OhpOnePlateChallenge(context));
+        _challenges.Add(new DeadliftTwoPlatesChallenge(context));
+        _challenges.Add(new DeadliftThreePlatesChallenge(context));
     }
 
     public async Task Notify(WorkoutAction action, Workout payload)
