@@ -22,11 +22,11 @@ public class OneRepMaxChallenge : IChallenge
         }
 
         var oneRepMaxes = await _context.OneRepMaxes
+            .Where(q => q.UserId == payload.UserId)
             .Include(q => q.ExerciseInfo)
             .GroupBy(p => p.ExerciseInfo.Id)
-            .Select(g => g.OrderByDescending(p => p.Set.Exercise.Workout.Date).ThenByDescending(p => p.Id)
-                .First()
-            ).ToDictionaryAsync(q => q.ExerciseInfo.Id);
+            .Select(q => q.OrderByDescending(p => p.Id).First())
+            .ToDictionaryAsync(q => q.ExerciseInfo.Id);
 
         // Group sets into groups of <ExerciseInfoId, List<Set>>
         var setsGroups = payload.Exercises
@@ -48,7 +48,7 @@ public class OneRepMaxChallenge : IChallenge
             {
                 continue;
             }
-            
+
             // Get one rep max from the set with the highest one rep max
             var newMax = GetOneRepMaxFromSet(highestSet);
 
@@ -86,11 +86,11 @@ public class OneRepMaxChallenge : IChallenge
 
     private int CalculateOneRepMax(Set set)
     {
-        return (int) Math.Round(set.Weight / (1.0278 - (0.0278 * set.Reps)), 0);
+        return (int)Math.Round(set.Weight / (1.0278 - (0.0278 * set.Reps)), 0);
     }
 
     public string GetId() => "oneRepMaxChallenge";
-    
+
     // OneRepMaxChallenge is a special case where it has it's own table and does not have an entry in the Challenges table
     public Challenge GetDefinition()
     {
