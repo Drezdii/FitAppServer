@@ -1,9 +1,11 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 using FitAppServer.Services.Services;
+using FitAppServerREST.DTOs.Challenges;
 using FitAppServerREST.Mappings;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
 
 namespace FitAppServerREST.Controllers;
@@ -15,13 +17,15 @@ public class ChallengesController : ControllerBase
     private readonly ILogger _logger;
     private readonly IUsersService _usersService;
     private readonly IChallengesService _challengesService;
+    private readonly IStringLocalizer<ChallengesController> _localizer;
 
     public ChallengesController(IChallengesService challengesService, IUsersService usersService,
-        ILogger<ChallengesController> logger)
+        ILogger<ChallengesController> logger, IStringLocalizer<ChallengesController> localizer)
     {
         _challengesService = challengesService;
         _usersService = usersService;
         _logger = logger;
+        _localizer = localizer;
     }
 
     [HttpGet]
@@ -67,6 +71,16 @@ public class ChallengesController : ControllerBase
         }
 
         var challenges = await _challengesService.GetChallengesEntriesByUserId(userid);
-        return Ok(challenges.Select(q => q.ToDto()));
+
+        var translatedChallenges = challenges.Select(entry =>
+        {
+            var challenge = new TranslatedChallengeDto(_localizer[entry.Challenge.NameTranslationKey],
+                _localizer[entry.Challenge.DescriptionTranslationKey ?? ""], entry.Challenge.StartDate,
+                entry.Challenge.EndDate, entry.Challenge.Goal, entry.Challenge.Unit);
+
+            return new ChallengeEntryDto(entry.Value, entry.ChallengeId, entry.CompletedAt, challenge);
+        }).ToList();
+
+        return Ok(translatedChallenges);
     }
 }
