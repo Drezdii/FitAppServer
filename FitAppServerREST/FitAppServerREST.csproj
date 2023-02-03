@@ -21,4 +21,28 @@
       <ProjectReference Include="..\FitAppServer.Services\FitAppServer.Services.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <EmbeddedResource Update="Resources\Controllers\ChallengesController.en.resx">
+        <Generator>ResXFileCodeGenerator</Generator>
+        <LastGenOutput>ChallengesController.en.Designer.cs</LastGenOutput>
+      </EmbeddedResource>
+      <EmbeddedResource Update="Resources\Controllers\ChallengesController.pl.resx">
+        <Generator>ResXFileCodeGenerator</Generator>
+        <LastGenOutput>ChallengesController.pl.Designer.cs</LastGenOutput>
+      </EmbeddedResource>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Update="Resources\Controllers\ChallengesController.en.Designer.cs">
+        <DesignTime>True</DesignTime>
+        <AutoGen>True</AutoGen>
+        <DependentUpon>ChallengesController.en.resx</DependentUpon>
+      </Compile>
+      <Compile Update="Resources\Controllers\ChallengesController.pl.Designer.cs">
+        <DesignTime>True</DesignTime>
+        <AutoGen>True</AutoGen>
+        <DependentUpon>ChallengesController.pl.resx</DependentUpon>
+      </Compile>
+    </ItemGroup>
+
 </Project>
