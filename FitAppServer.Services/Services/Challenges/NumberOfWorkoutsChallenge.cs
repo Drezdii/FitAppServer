@@ -19,34 +19,26 @@ public class NumberOfWorkoutsChallenge : IChallenge
 
     public async Task Check(WorkoutAction action, Workout workout)
     {
-        if (action is not WorkoutAction.Created and not WorkoutAction.Deleted)
+        var entry = await _context.ChallengeEntries.Where(q => q.UserId == workout.UserId && q.Challenge.Id == GetId())
+            .FirstOrDefaultAsync();
+
+        if (entry == null)
         {
-            return;
+            // TODO: Add appropriate exception
+            throw new Exception();
         }
 
-        var challenge = await _context.ChallengeEntries.FirstOrDefaultAsync(
-            q => q.UserId == workout.UserId && q.Challenge.Id == GetId() && q.CompletedAt == null);
-
-        if (challenge == null)
-        {
-            // TODO: Handle missing ChallengeEntry
-            return;
-        }
-
-        var additionValue = 1;
-
-        // Decrease the counter on workout deletion
-        if (action == WorkoutAction.Deleted)
-        {
-            additionValue = -1;
-        }
-
-        await _context.ChallengeEntries.Where(q => q.UserId == workout.UserId && q.Challenge.Id == GetId())
-            .ExecuteUpdateAsync(q => q.SetProperty(c => c.Value, c => c.Value + additionValue));
+        // TODO: Update this once proper diffing algorithm is implemented for updating/deleting workouts
+        var newCount = await _context.Workouts.Where(q =>
+                q.UserId == workout.UserId && q.StartDate != null && q.EndDate != null)
+            .CountAsync();
+        
+        entry.Value = newCount;
     }
 
 
     public string GetId() => "numOfCreatedWorkoutsChallenge2022";
+
     public Challenge GetDefinition()
     {
         return new Challenge
