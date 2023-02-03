@@ -1,4 +1,5 @@
-﻿using FitAppServer.DataAccess.Entities;
+﻿using System.Threading.Tasks;
+using FitAppServer.DataAccess.Entities;
 using FitAppServer.Services.DTOs.Users;
 
 namespace FitAppServer.Services.Services;

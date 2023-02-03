@@ -1,4 +1,6 @@
-﻿namespace FitAppServer.Services.Utils;
+﻿using System;
+
+namespace FitAppServer.Services.Utils;
 
 public static class DateOnlyHelper
 {

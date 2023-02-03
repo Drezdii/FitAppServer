@@ -1,4 +1,7 @@
-﻿using FitAppServer.DataAccess;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using FitAppServer.DataAccess;
 using FitAppServer.DataAccess.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;

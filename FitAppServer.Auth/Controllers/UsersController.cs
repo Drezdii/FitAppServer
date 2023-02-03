@@ -1,4 +1,6 @@
-﻿using FitAppServer.Auth.DTOs;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+using FitAppServer.Auth.DTOs;
 using FitAppServer.Services.DTOs.Users;
 using FitAppServer.Services.Models;
 using FitAppServer.Services.Services;

@@ -1,4 +1,7 @@
-﻿using FitAppServer.DataAccess.Entities;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using FitAppServer.DataAccess.Entities;
 using FitAppServer.Services.Models;
 using FitAppServer.Services.Services;
 using FitAppServerREST.DTOs.Creator;
@@ -6,6 +9,7 @@ using FitAppServerREST.DTOs.Workouts;
 using FitAppServerREST.Mappings;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 namespace FitAppServerREST.Controllers;
 

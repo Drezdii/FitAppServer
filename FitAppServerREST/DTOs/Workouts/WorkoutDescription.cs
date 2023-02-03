@@ -1,4 +1,6 @@
-﻿namespace FitAppServerREST.DTOs.Workouts;
+﻿using System;
+
+namespace FitAppServerREST.DTOs.Workouts;
 
 public class WorkoutDescription
 {

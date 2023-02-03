@@ -1,4 +1,6 @@
-﻿using FirebaseAdmin.Auth;
+﻿using System;
+using System.Threading.Tasks;
+using FirebaseAdmin.Auth;
 using FitAppServer.DataAccess;
 using FitAppServer.DataAccess.Entities;
 using FitAppServer.Services.DTOs.Users;

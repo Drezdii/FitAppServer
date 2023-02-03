@@ -1,4 +1,6 @@
-﻿using FitAppServer.DataAccess;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+using FitAppServer.DataAccess;
 using FitAppServer.DataAccess.Entities;
 using FitAppServer.Services.Models;
 using FitAppServer.Services.Services.Challenges;

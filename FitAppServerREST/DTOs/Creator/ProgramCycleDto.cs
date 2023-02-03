@@ -1,4 +1,6 @@
-﻿namespace FitAppServerREST.DTOs.Creator;
+﻿using System.Collections.Generic;
+
+namespace FitAppServerREST.DTOs.Creator;
 
 public class ProgramCycleDto
 {

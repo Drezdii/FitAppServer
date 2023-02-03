@@ -1,4 +1,5 @@
-﻿using FitAppServer.DataAccess.Entities;
+﻿using System.Collections.Generic;
+using FitAppServer.DataAccess.Entities;
 
 namespace FitAppServerREST.DTOs.Creator;
 

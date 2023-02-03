@@ -1,4 +1,7 @@
-﻿using FitAppServer.DataAccess;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using FitAppServer.DataAccess;
 using FitAppServer.DataAccess.Entities;
 using Microsoft.EntityFrameworkCore;
 
@@ -18,10 +21,10 @@ public class ChallengesService : IChallengesService
         // Get one rep max for each big lift based on workout date and the id of the one rep max
         return await _context.OneRepMaxes
             .Where(q => q.User.Uuid == userId)
-            .GroupBy(p => p.Set.Exercise.ExerciseInfoId)
-            .Select(g => g.OrderByDescending(p => p.Set.Exercise.Workout.Date).ThenByDescending(p => p.Id)
-                .First()
-            ).ToListAsync();
+            .Include(q => q.ExerciseInfo)
+            .GroupBy(p => p.ExerciseInfo.Id)
+            .Select(q => q.OrderByDescending(p => p.Id).First())
+            .ToListAsync();
     }
 
     public async Task<ICollection<ChallengeEntry>> GetChallengesEntriesByUserId(string userid)

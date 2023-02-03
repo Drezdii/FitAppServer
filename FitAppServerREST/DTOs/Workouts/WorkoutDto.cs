@@ -1,4 +1,6 @@
-﻿using FitAppServer.DataAccess.Entities;
+﻿using System;
+using System.Collections.Generic;
+using FitAppServer.DataAccess.Entities;
 using FitAppServerREST.DTOs.Creator;
 
 namespace FitAppServerREST.DTOs.Workouts;
