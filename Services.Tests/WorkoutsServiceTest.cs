@@ -207,6 +207,6 @@ public class WorkoutsServiceTest : IClassFixture<TestDatabaseFixture>
             .ThenInclude(q => q.Sets)
             .SingleAsync(q => q.Type == WorkoutTypeCode.Bench);
 
-        Assert.Equal(5, addedWorkout.Exercises.First().Sets.First().Reps);
+        Assert.Equal(100, addedWorkout.Exercises.First().Sets.First().Weight);
     }
 }
