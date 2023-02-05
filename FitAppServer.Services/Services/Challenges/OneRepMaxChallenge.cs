@@ -56,7 +56,7 @@ public class OneRepMaxChallenge : IChallenge
             // Get one rep max from the set with the highest one rep max
             var newMax = GetOneRepMaxFromSet(highestSet);
 
-            newMax.User = payload.User;
+            newMax.UserId = payload.UserId;
             newMax.ExerciseInfoId = group.Key;
 
             if (oneRepMaxes.ContainsKey(group.Key))

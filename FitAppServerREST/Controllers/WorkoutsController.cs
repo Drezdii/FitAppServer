@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using FitAppServer.DataAccess.Entities;
@@ -97,7 +98,14 @@ public class WorkoutsController : ControllerBase
 
 
         var res = await _workoutsService.AddOrUpdateWorkoutAsync(wrk);
-        await _challengesManager.Notify(isNewWorkout ? WorkoutAction.Created : WorkoutAction.Updated, wrk);
+        try
+        {
+            await _challengesManager.Notify(isNewWorkout ? WorkoutAction.Created : WorkoutAction.Updated, wrk);
+        }
+        catch (Exception e)
+        {
+            _logger.LogError("{Error}", e.Message);
+        }
 
         return Ok(res.ToDto());
     }

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using FitAppServer.DataAccess;
@@ -45,7 +46,6 @@ public class WorkoutsService : IWorkoutsService
             .Include(q => q.Exercises)
             .ThenInclude(q => q.Sets)
             .Include(q => q.User)
-            .AsNoTrackingWithIdentityResolution()
             .AsSplitQuery()
             .SingleOrDefaultAsync();
 
@@ -55,19 +55,34 @@ public class WorkoutsService : IWorkoutsService
     public async Task<Workout> AddOrUpdateWorkoutAsync(Workout workout)
     {
         // Clear any IDs that might have been posted
-        if (workout.Id < 0) workout.Id = 0;
+        if (workout.Id < 0)
+        {
+            workout.Id = 0;
+        }
 
         foreach (var ex in workout.Exercises)
         {
-            foreach (var set in ex.Sets)
-                if (set.Id < 0)
-                    set.Id = 0;
+            if (workout.Id != 0)
+            {
+                continue;
+            }
 
-            if (ex.Id < 0) ex.Id = 0;
+            foreach (var set in ex.Sets)
+            {
+                if (set.Id != 0)
+                {
+                    set.Id = 0;
+                }
+            }
+
+            if (ex.Id != 0)
+            {
+                ex.Id = 0;
+            }
         }
 
         // Check if this is a new workout
-        if (workout.Id <= 0)
+        if (workout.Id == 0)
         {
             _context.Workouts.Add(workout);
             _context.Entry(workout.User).State = EntityState.Unchanged;
@@ -76,33 +91,48 @@ public class WorkoutsService : IWorkoutsService
             return workout;
         }
 
-        // Begin tracking the workout
-        _context.Update(workout);
+        var existingWorkout = await GetByWorkoutIdAsync(workout.Id);
 
-        // Remove all exercises and sets that are missing from the payload
-        // Get all IDs from the payload before Entity Framework populates it when searching for all existing exercises
-        var exIds = workout.Exercises.Select(q => q.Id).ToList();
+        if (existingWorkout == null)
+        {
+            _logger.LogError("Workout with ID: {Id} couldn't be found when trying to update it", workout.Id);
+            throw new Exception("Couldn't update workout.");
+        }
+        
+        existingWorkout.Exercises.ForEach(ex =>
+        {
+            var updatedExerciseSets = workout.Exercises.Find(q => q.Id == ex.Id)?.Sets.ToDictionary(q => q.Id);
 
-        var setsIds = new List<int>();
+            if (updatedExerciseSets == null)
+            {
+                return;
+            }
 
-        foreach (var ex in workout.Exercises) setsIds.AddRange(ex.Sets.Select(q => q.Id).ToList());
+            foreach (var set in ex.Sets)
+            {
+                var updatedSet = updatedExerciseSets[set.Id];
 
-        // Load all exercises in this workout at once
-        var allExistingExercises = await _context.Exercises.Where(q => q.Workout.Id == workout.Id)
-            .Include(q => q.Sets).ToListAsync();
+                set.Reps = updatedSet.Reps;
+                set.Weight = updatedSet.Weight;
+                set.Completed = updatedSet.Completed;
+            }
+        });
 
-        // Get exercises that are missing from the payload
-        var missingExercises = allExistingExercises.Where(q => !exIds.Contains(q.Id));
-        _context.Exercises.RemoveRange(missingExercises);
+        existingWorkout.Exercises = existingWorkout.Exercises
+            .IntersectBy(workout.Exercises.Select(q => q.Id), q => q.Id).ToList();
 
-        var allExistingSets = allExistingExercises.SelectMany(q => q.Sets).ToList();
+        var addedExercises =
+            workout.Exercises.ExceptBy(existingWorkout.Exercises.Select(q => q.Id), x => x.Id).ToList();
 
-        // Get sets that are missing from the payload
-        var missingSets = allExistingSets.Where(q => !setsIds.Contains(q.Id)).ToList();
-        _context.Sets.RemoveRange(missingSets);
+        if (addedExercises.Any(ex => ex.Id != 0))
+        {
+            throw new Exception("New exercise with non-zero ID was posted.");
+        }
+
+        existingWorkout.Exercises.AddRange(addedExercises);
 
         await _context.SaveChangesAsync();
-        return workout;
+        return existingWorkout;
     }
 
     public async Task DeleteWorkoutAsync(int workoutid)

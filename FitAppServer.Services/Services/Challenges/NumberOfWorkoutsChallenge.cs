@@ -25,7 +25,7 @@ public class NumberOfWorkoutsChallenge : IChallenge
         if (entry == null)
         {
             // TODO: Add appropriate exception
-            throw new Exception();
+            return;
         }
 
         // TODO: Update this once proper diffing algorithm is implemented for updating/deleting workouts
