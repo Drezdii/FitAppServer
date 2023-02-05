@@ -8,7 +8,7 @@ namespace Services.Tests;
 public class TestDatabaseFixture
 {
     private const string ConnectionString =
-        @"Server=127.0.0.1;Port=5432;Database=tests;User Id=postgres;Password=root;";
+        @"Server=localhost;Port=5432;Database=tests;User Id=postgres;Password=root;";
 
     private static readonly object _lock = new();
     private static bool _databaseInitialized;
