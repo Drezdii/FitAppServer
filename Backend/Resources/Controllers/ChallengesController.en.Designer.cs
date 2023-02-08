@@ -38,7 +38,7 @@ namespace FitAppServerREST.Resources.Controllers {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("FitAppServerREST.Resources.Controllers.ChallengesController.en", typeof(ChallengesController_en).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Backend.Resources.Controllers.ChallengesController.en", typeof(ChallengesController_en).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;

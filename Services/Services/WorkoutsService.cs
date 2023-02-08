@@ -20,11 +20,6 @@ public class WorkoutsService : IWorkoutsService
         _logger = logger;
     }
 
-    public ValueTask DisposeAsync()
-    {
-        return _context.DisposeAsync();
-    }
-
     public async Task<ICollection<Workout>> GetByUserIdAsync(string userid)
     {
         var workouts = await _context.Workouts

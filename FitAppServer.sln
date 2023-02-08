@@ -3,13 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31313.79
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FitAppServer.DataAccess", "FitAppServer.DataAccess\FitAppServer.DataAccess.csproj", "{966F1286-D883-4317-917E-341CB3134234}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataAccess", "DataAccess\DataAccess.csproj", "{966F1286-D883-4317-917E-341CB3134234}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FitAppServer.Auth", "FitAppServer.Auth\FitAppServer.Auth.csproj", "{56741D70-7DCD-4340-BDA6-BE31218D6C13}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Auth", "Auth\Auth.csproj", "{56741D70-7DCD-4340-BDA6-BE31218D6C13}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FitAppServerREST", "FitAppServerREST\FitAppServerREST.csproj", "{2A44713C-52F0-437D-9451-B53ACAA1DB0F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Backend", "Backend\Backend.csproj", "{2A44713C-52F0-437D-9451-B53ACAA1DB0F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FitAppServer.Services", "FitAppServer.Services\FitAppServer.Services.csproj", "{90C4473E-0FDD-4EBC-A8C8-E4B1CE593900}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Services", "Services\Services.csproj", "{90C4473E-0FDD-4EBC-A8C8-E4B1CE593900}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Services.Tests", "Services.Tests\Services.Tests.csproj", "{396B3032-9841-4D78-B0F4-1CB058D75239}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{90C4473E-0FDD-4EBC-A8C8-E4B1CE593900}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{90C4473E-0FDD-4EBC-A8C8-E4B1CE593900}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{90C4473E-0FDD-4EBC-A8C8-E4B1CE593900}.Release|Any CPU.Build.0 = Release|Any CPU
+		{396B3032-9841-4D78-B0F4-1CB058D75239}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{396B3032-9841-4D78-B0F4-1CB058D75239}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{396B3032-9841-4D78-B0F4-1CB058D75239}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{396B3032-9841-4D78-B0F4-1CB058D75239}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
