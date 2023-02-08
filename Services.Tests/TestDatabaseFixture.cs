@@ -1,4 +1,5 @@
-﻿using FitAppServer.DataAccess;
+﻿using System.Collections.Generic;
+using FitAppServer.DataAccess;
 using FitAppServer.DataAccess.Entities;
 using Microsoft.EntityFrameworkCore;
 
@@ -7,14 +8,14 @@ namespace Services.Tests;
 public class TestDatabaseFixture
 {
     private const string ConnectionString =
-        @"Server=postgres;Port=5432;Database=tests;User Id=postgres;Password=root;";
+        @"Server=localhost;Port=5432;Database=tests;User Id=postgres;Password=root;";
 
-    private static readonly object _lock = new();
+    private static readonly object Lock = new();
     private static bool _databaseInitialized;
 
     public TestDatabaseFixture()
     {
-        lock (_lock)
+        lock (Lock)
         {
             if (_databaseInitialized)
             {
@@ -40,6 +41,36 @@ public class TestDatabaseFixture
                     Uuid = Constants.USER_UUID
                 });
 
+                var exercises = new List<Exercise>
+                {
+                    new()
+                    {
+                        ExerciseInfoId = 1,
+                        Sets = new List<Set>
+                        {
+                            new()
+                            {
+                                Reps = 5,
+                                Weight = 200,
+                                Completed = false
+                            }
+                        }
+                    },
+                    new()
+                    {
+                        ExerciseInfoId = 2,
+                        Sets = new List<Set>()
+                        {
+                            new()
+                            {
+                                Reps = 10,
+                                Weight = 100,
+                                Completed = false
+                            }
+                        }
+                    }
+                };
+
                 context.Add(new Workout
                 {
                     Id = Constants.WORKOUT_ID,
@@ -47,8 +78,10 @@ public class TestDatabaseFixture
                     StartDate = null,
                     EndDate = null,
                     UserId = Constants.USER_ID,
-                    Type = WorkoutTypeCode.None
+                    Type = WorkoutTypeCode.None,
+                    Exercises = exercises
                 });
+
 
                 context.SaveChanges();
             }

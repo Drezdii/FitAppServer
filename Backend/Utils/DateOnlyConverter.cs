@@ -5,17 +5,16 @@ using System.Text.RegularExpressions;
 
 namespace FitAppServerREST.Utils;
 
-public class DateOnlyConverter : JsonConverter<DateOnly>
+public partial class DateOnlyConverter : JsonConverter<DateOnly>
 {
     public override DateOnly Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
         if (reader.TryGetDateTime(out var dt)) return DateOnly.FromDateTime(dt);
 
-        ;
         var value = reader.GetString();
         if (value == null) return default;
 
-        var match = new Regex("^(\\d\\d\\d\\d)-(\\d\\d)-(\\d\\d)(T|\\s|\\z)").Match(value);
+        var match = MyRegex().Match(value);
         return match.Success
             ? new DateOnly(int.Parse(match.Groups[1].Value), int.Parse(match.Groups[2].Value),
                 int.Parse(match.Groups[3].Value))
@@ -26,19 +25,22 @@ public class DateOnlyConverter : JsonConverter<DateOnly>
     {
         writer.WriteStringValue(value.ToString("yyyy-MM-dd"));
     }
+
+    [GeneratedRegex("^(\\d\\d\\d\\d)-(\\d\\d)-(\\d\\d)(T|\\s|\\z)")]
+    private static partial Regex MyRegex();
 }
 
-public class DateOnlyNullableConverter : JsonConverter<DateOnly?>
+public partial class DateOnlyNullableConverter : JsonConverter<DateOnly?>
 {
     public override DateOnly? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
         if (reader.TryGetDateTime(out var dt)) return DateOnly.FromDateTime(dt);
 
-        ;
+
         var value = reader.GetString();
         if (value == null) return default;
 
-        var match = new Regex("^(\\d\\d\\d\\d)-(\\d\\d)-(\\d\\d)(T|\\s|\\z)").Match(value);
+        var match = MyRegex().Match(value);
         return match.Success
             ? new DateOnly(int.Parse(match.Groups[1].Value), int.Parse(match.Groups[2].Value),
                 int.Parse(match.Groups[3].Value))
@@ -49,6 +51,9 @@ public class DateOnlyNullableConverter : JsonConverter<DateOnly?>
     {
         writer.WriteStringValue(value?.ToString("yyyy-MM-dd"));
     }
+
+    [GeneratedRegex("^(\\d\\d\\d\\d)-(\\d\\d)-(\\d\\d)(T|\\s|\\z)")]
+    private static partial Regex MyRegex();
 }
 
 public static class DateOnlyConverterExtensions

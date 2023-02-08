@@ -79,7 +79,7 @@ public class WorkoutsServiceTest : IClassFixture<TestDatabaseFixture>
 
         context.ChangeTracker.Clear();
 
-        Assert.Empty(context.Workouts.ToList());
+        Assert.Null(await context.Workouts.SingleOrDefaultAsync(q => q.Id == Constants.WORKOUT_ID));
     }
 
     [Fact]
@@ -102,17 +102,10 @@ public class WorkoutsServiceTest : IClassFixture<TestDatabaseFixture>
 
         var service = new WorkoutsService(context, NullLogger<WorkoutsService>.Instance);
 
-        var user = await context.Users.SingleAsync(q => q.Id == Constants.USER_ID);
+        var workout = CreateWorkoutObject();
 
-        var workout = new Workout
-        {
-            Date = new DateOnly(2023, 2, 5),
-            StartDate = null,
-            EndDate = null,
-            User = user,
-            Type = WorkoutTypeCode.Deadlift,
-            UserId = Constants.USER_ID
-        };
+        workout.User = await context.Users.SingleAsync(q => q.Id == Constants.USER_ID);
+        workout.Date = new DateOnly(2023, 2, 5);
 
         await service.AddOrUpdateWorkoutAsync(workout);
 
@@ -130,24 +123,11 @@ public class WorkoutsServiceTest : IClassFixture<TestDatabaseFixture>
 
         var service = new WorkoutsService(context, NullLogger<WorkoutsService>.Instance);
 
-        var user = await context.Users.SingleAsync(q => q.Id == Constants.USER_ID);
+        var workout = CreateWorkoutObject();
+        var exercise = CreateExerciseObject();
 
-        var exercise = new Exercise
-        {
-            Id = 0,
-            ExerciseInfoId = 1
-        };
-
-        var workout = new Workout
-        {
-            Date = null,
-            StartDate = null,
-            EndDate = null,
-            User = user,
-            Type = WorkoutTypeCode.Bench,
-            UserId = Constants.USER_ID
-        };
-
+        workout.Type = WorkoutTypeCode.Bench;
+        workout.User = await context.Users.SingleAsync(q => q.Id == Constants.USER_ID);
         workout.Exercises.Add(exercise);
 
         await service.AddOrUpdateWorkoutAsync(workout);
@@ -169,34 +149,13 @@ public class WorkoutsServiceTest : IClassFixture<TestDatabaseFixture>
 
         var service = new WorkoutsService(context, NullLogger<WorkoutsService>.Instance);
 
-        var user = await context.Users.SingleAsync(q => q.Id == Constants.USER_ID);
+        var workout = CreateWorkoutObject();
+        var exercise = CreateExerciseObject();
+        var set = CreateSetObject();
 
-        var exercise = new Exercise
-        {
-            Id = 0,
-            ExerciseInfoId = 1
-        };
-
-        var set = new Set
-        {
-            Id = 0,
-            Reps = 5,
-            Weight = 100,
-            Completed = false
-        };
+        workout.User = await context.Users.SingleAsync(q => q.Id == Constants.USER_ID);
 
         exercise.Sets.Add(set);
-
-        var workout = new Workout
-        {
-            Date = null,
-            StartDate = null,
-            EndDate = null,
-            User = user,
-            Type = WorkoutTypeCode.Bench,
-            UserId = Constants.USER_ID
-        };
-
         workout.Exercises.Add(exercise);
 
         await service.AddOrUpdateWorkoutAsync(workout);
@@ -205,8 +164,75 @@ public class WorkoutsServiceTest : IClassFixture<TestDatabaseFixture>
 
         var addedWorkout = await context.Workouts.Include(q => q.Exercises)
             .ThenInclude(q => q.Sets)
-            .SingleAsync(q => q.Type == WorkoutTypeCode.Bench);
+            .SingleAsync(q => q.Id == 1);
 
-        Assert.Equal(5, addedWorkout.Exercises.First().Sets.First().Reps);
+        Assert.Equal(100, addedWorkout.Exercises.First().Sets.First().Weight);
     }
+
+    [Fact]
+    public async void AddOrUpdateWorkout_UpdateWorkoutToRemoveExercise()
+    {
+        await using var context = Fixture.CreateContext();
+
+        await context.Database.BeginTransactionAsync();
+
+        var service = new WorkoutsService(context, NullLogger<WorkoutsService>.Instance);
+
+        // Prepare updated workout object
+        var workout = CreateWorkoutObject();
+        workout.Id = Constants.WORKOUT_ID;
+
+        var exercises = new List<Exercise>
+        {
+            new()
+            {
+                Id = 1,
+                ExerciseInfoId = 1,
+                Sets = new List<Set>
+                {
+                    new()
+                    {
+                        Id = 1,
+                        Reps = 5,
+                        Weight = 200,
+                        Completed = false
+                    }
+                }
+            }
+        };
+
+        workout.Exercises = exercises;
+        workout.User = await context.Users.SingleAsync(q => q.Id == Constants.USER_ID);
+
+        await service.AddOrUpdateWorkoutAsync(workout);
+
+        context.ChangeTracker.Clear();
+
+        var updatedWorkout = await context.Workouts.Include(q => q.Exercises).ThenInclude(q => q.Sets)
+            .SingleAsync(q => q.Id == Constants.WORKOUT_ID);
+
+        Assert.Equal(200, updatedWorkout.Exercises.First().Sets.First().Weight);
+        Assert.Equal(1, updatedWorkout.Exercises.Count);
+    }
+
+    private static Workout CreateWorkoutObject() => new()
+    {
+        Date = null,
+        StartDate = null,
+        EndDate = null,
+        Type = WorkoutTypeCode.None,
+        UserId = Constants.USER_ID
+    };
+
+    private static Exercise CreateExerciseObject() => new()
+    {
+        ExerciseInfoId = 1
+    };
+
+    private static Set CreateSetObject() => new()
+    {
+        Reps = 5,
+        Weight = 100,
+        Completed = false
+    };
 }
