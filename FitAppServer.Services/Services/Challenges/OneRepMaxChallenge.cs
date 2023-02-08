@@ -90,7 +90,7 @@ public class OneRepMaxChallenge : IChallenge
 
     private int CalculateOneRepMax(Set set)
     {
-        return (int)Math.Round(set.Weight / (1.0278 - (0.0278 * set.Reps)), 0);
+        return (int)Math.Round(100 * set.Weight / (48.8 + 53.8 * Math.Pow(Math.E, -0.075 * set.Reps)), 0);
     }
 
     public string GetId() => "oneRepMaxChallenge";
