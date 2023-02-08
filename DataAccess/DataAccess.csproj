@@ -5,6 +5,7 @@
         <LangVersion>default</LangVersion>
         <Nullable>enable</Nullable>
         <ImplicitUsings>disable</ImplicitUsings>
+        <RootNamespace>FitAppServer.DataAccess</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>
