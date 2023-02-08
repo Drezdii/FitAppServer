@@ -215,6 +215,173 @@ public class WorkoutsServiceTest : IClassFixture<TestDatabaseFixture>
         Assert.Equal(1, updatedWorkout.Exercises.Count);
     }
 
+    [Fact]
+    public async void AddOrUpdateWorkout_UpdateWorkoutToRemoveSet()
+    {
+        await using var context = Fixture.CreateContext();
+        await context.Database.BeginTransactionAsync();
+
+        var service = new WorkoutsService(context, NullLogger<WorkoutsService>.Instance);
+
+        // Prepare updated workout object
+        var workout = CreateWorkoutObject();
+        workout.Id = Constants.WORKOUT_ID;
+
+        var exercises = new List<Exercise>
+        {
+            new()
+            {
+                ExerciseInfoId = 1,
+                Sets = new List<Set>()
+            },
+            new()
+            {
+                ExerciseInfoId = 2,
+                Sets = new List<Set>
+                {
+                    new()
+                    {
+                        Reps = 10,
+                        Weight = 100,
+                        Completed = false
+                    }
+                }
+            }
+        };
+
+        workout.Exercises = exercises;
+
+        await service.AddOrUpdateWorkoutAsync(workout);
+
+        context.ChangeTracker.Clear();
+
+        var updatedWorkout = await context.Workouts.Include(q => q.Exercises).ThenInclude(q => q.Sets)
+            .SingleAsync(q => q.Id == Constants.WORKOUT_ID);
+
+        Assert.Equal(0, updatedWorkout.Exercises.First().Sets.Count);
+    }
+
+    [Fact]
+    public async void AddOrUpdateWorkout_UpdateWorkoutWithNewExercise()
+    {
+        await using var context = Fixture.CreateContext();
+        await context.Database.BeginTransactionAsync();
+
+        var service = new WorkoutsService(context, NullLogger<WorkoutsService>.Instance);
+
+        // Prepare updated workout object
+        var workout = CreateWorkoutObject();
+        workout.Id = Constants.WORKOUT_ID;
+
+        var exercises = new List<Exercise>
+        {
+            new()
+            {
+                ExerciseInfoId = 1,
+                Sets = new List<Set>
+                {
+                    new()
+                    {
+                        Reps = 5,
+                        Weight = 200,
+                        Completed = false
+                    }
+                }
+            },
+            new()
+            {
+                ExerciseInfoId = 2,
+                Sets = new List<Set>
+                {
+                    new()
+                    {
+                        Reps = 10,
+                        Weight = 100,
+                        Completed = false
+                    }
+                }
+            },
+            new()
+            {
+                ExerciseInfoId = 2,
+                Sets = new List<Set>()
+            }
+        };
+
+        workout.Exercises = exercises;
+
+        await service.AddOrUpdateWorkoutAsync(workout);
+
+        context.ChangeTracker.Clear();
+
+        var updatedWorkout = await context.Workouts.Include(q => q.Exercises).ThenInclude(q => q.Sets)
+            .SingleAsync(q => q.Id == Constants.WORKOUT_ID);
+
+        Assert.Equal(3, updatedWorkout.Exercises.Count);
+    }
+
+    [Fact]
+    public async void AddOrUpdateWorkout_UpdateWorkoutWithNewSet()
+    {
+        await using var context = Fixture.CreateContext();
+        await context.Database.BeginTransactionAsync();
+
+        var service = new WorkoutsService(context, NullLogger<WorkoutsService>.Instance);
+
+        // Prepare updated workout object
+        var workout = CreateWorkoutObject();
+        workout.Id = Constants.WORKOUT_ID;
+
+        var exercises = new List<Exercise>
+        {
+            new()
+            {
+                ExerciseInfoId = 1,
+                Sets = new List<Set>
+                {
+                    new()
+                    {
+                        Reps = 5,
+                        Weight = 200,
+                        Completed = false
+                    },
+                    new()
+                    {
+                        Reps = 5,
+                        Weight = 205,
+                        Completed = false
+                    }
+                }
+            },
+            new()
+            {
+                ExerciseInfoId = 2,
+                Sets = new List<Set>
+                {
+                    new()
+                    {
+                        Reps = 10,
+                        Weight = 100,
+                        Completed = false
+                    }
+                }
+            }
+        };
+
+        workout.Exercises = exercises;
+
+        await service.AddOrUpdateWorkoutAsync(workout);
+
+        context.ChangeTracker.Clear();
+
+        var updatedWorkout = await context.Workouts.Include(q => q.Exercises).ThenInclude(q => q.Sets)
+            .SingleAsync(q => q.Id == Constants.WORKOUT_ID);
+
+        Assert.Equal(2, updatedWorkout.Exercises.First().Sets.Count);
+    }
+    
+    // TODO: Add tests for AddProgramCycle()
+
     private static Workout CreateWorkoutObject() => new()
     {
         Date = null,
