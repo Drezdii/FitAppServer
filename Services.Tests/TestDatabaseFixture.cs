@@ -8,7 +8,7 @@ namespace Services.Tests;
 public class TestDatabaseFixture
 {
     private const string ConnectionString =
-        @"Server=postgres;Port=5432;Database=tests;User Id=postgres;Password=root;";
+        @"Server=localhost;Port=5432;Database=tests;User Id=postgres;Password=root;";
 
     private static readonly object Lock = new();
     private static bool _databaseInitialized;
@@ -45,11 +45,13 @@ public class TestDatabaseFixture
                 {
                     new()
                     {
+                        Id = 1000,
                         ExerciseInfoId = 1,
                         Sets = new List<Set>
                         {
                             new()
                             {
+                                Id = 1000,
                                 Reps = 5,
                                 Weight = 200,
                                 Completed = false
@@ -58,11 +60,13 @@ public class TestDatabaseFixture
                     },
                     new()
                     {
+                        Id = 2000,
                         ExerciseInfoId = 2,
                         Sets = new List<Set>
                         {
                             new()
                             {
+                                Id = 2000,
                                 Reps = 10,
                                 Weight = 100,
                                 Completed = false
