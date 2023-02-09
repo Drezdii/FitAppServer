@@ -186,13 +186,13 @@ public class WorkoutsServiceTest : IClassFixture<TestDatabaseFixture>
         {
             new()
             {
-                Id = 1,
+                Id = 1000,
                 ExerciseInfoId = 1,
                 Sets = new List<Set>
                 {
                     new()
                     {
-                        Id = 1,
+                        Id = 1000,
                         Reps = 5,
                         Weight = 200,
                         Completed = false
@@ -231,16 +231,19 @@ public class WorkoutsServiceTest : IClassFixture<TestDatabaseFixture>
         {
             new()
             {
+                Id = 1000,
                 ExerciseInfoId = 1,
                 Sets = new List<Set>()
             },
             new()
             {
+                Id = 2000,
                 ExerciseInfoId = 2,
                 Sets = new List<Set>
                 {
                     new()
                     {
+                        Id = 2000,
                         Reps = 10,
                         Weight = 100,
                         Completed = false
@@ -277,11 +280,13 @@ public class WorkoutsServiceTest : IClassFixture<TestDatabaseFixture>
         {
             new()
             {
+                Id = 1000,
                 ExerciseInfoId = 1,
                 Sets = new List<Set>
                 {
                     new()
                     {
+                        Id = 1000,
                         Reps = 5,
                         Weight = 200,
                         Completed = false
@@ -290,11 +295,13 @@ public class WorkoutsServiceTest : IClassFixture<TestDatabaseFixture>
             },
             new()
             {
+                Id = 2000,
                 ExerciseInfoId = 2,
                 Sets = new List<Set>
                 {
                     new()
                     {
+                        Id = 2000,
                         Reps = 10,
                         Weight = 100,
                         Completed = false
@@ -303,6 +310,7 @@ public class WorkoutsServiceTest : IClassFixture<TestDatabaseFixture>
             },
             new()
             {
+                Id = 0,
                 ExerciseInfoId = 2,
                 Sets = new List<Set>()
             }
@@ -336,11 +344,13 @@ public class WorkoutsServiceTest : IClassFixture<TestDatabaseFixture>
         {
             new()
             {
+                Id = 1000,
                 ExerciseInfoId = 1,
                 Sets = new List<Set>
                 {
                     new()
                     {
+                        Id = 1000,
                         Reps = 5,
                         Weight = 200,
                         Completed = false
@@ -355,11 +365,13 @@ public class WorkoutsServiceTest : IClassFixture<TestDatabaseFixture>
             },
             new()
             {
+                Id = 2000,
                 ExerciseInfoId = 2,
                 Sets = new List<Set>
                 {
                     new()
                     {
+                        Id = 2000,
                         Reps = 10,
                         Weight = 100,
                         Completed = false
@@ -378,6 +390,8 @@ public class WorkoutsServiceTest : IClassFixture<TestDatabaseFixture>
             .SingleAsync(q => q.Id == Constants.WORKOUT_ID);
 
         Assert.Equal(2, updatedWorkout.Exercises.First().Sets.Count);
+        // Assert that the first set wasn't updated
+        Assert.Equal(200, updatedWorkout.Exercises.First().Sets.First().Weight);
     }
     
     // TODO: Add tests for AddProgramCycle()

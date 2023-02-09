@@ -45,11 +45,13 @@ public class TestDatabaseFixture
                 {
                     new()
                     {
+                        Id = 1000,
                         ExerciseInfoId = 1,
                         Sets = new List<Set>
                         {
                             new()
                             {
+                                Id = 1000,
                                 Reps = 5,
                                 Weight = 200,
                                 Completed = false
@@ -58,11 +60,13 @@ public class TestDatabaseFixture
                     },
                     new()
                     {
+                        Id = 2000,
                         ExerciseInfoId = 2,
                         Sets = new List<Set>
                         {
                             new()
                             {
+                                Id = 2000,
                                 Reps = 10,
                                 Weight = 100,
                                 Completed = false
