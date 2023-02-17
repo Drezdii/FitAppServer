@@ -97,7 +97,12 @@ public class WorkoutsController : ControllerBase
 
 
         var res = await _workoutsService.AddOrUpdateWorkoutAsync(wrk);
-        await _challengesManager.Notify(isNewWorkout ? WorkoutAction.Created : WorkoutAction.Updated, wrk);
+        
+        // Update challenges only for finished workouts
+        if (res.StartDate is not null && res.EndDate is not null)
+        {
+            await _challengesManager.Notify(isNewWorkout ? WorkoutAction.Created : WorkoutAction.Updated, wrk);
+        }
 
         return Ok(res.ToDto());
     }
