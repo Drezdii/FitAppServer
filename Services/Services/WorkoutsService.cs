@@ -93,26 +93,12 @@ public class WorkoutsService : IWorkoutsService
             _logger.LogError("Workout with ID: {Id} couldn't be found when trying to update it", workout.Id);
             throw new Exception("Couldn't update workout.");
         }
-        
-        existingWorkout.Exercises.ForEach(ex =>
-        {
-            var updatedExerciseSets = workout.Exercises.Find(q => q.Id == ex.Id)?.Sets.ToDictionary(q => q.Id);
 
-            if (updatedExerciseSets == null)
-            {
-                return;
-            }
+        existingWorkout.Date = workout.Date;
+        existingWorkout.StartDate = workout.StartDate;
+        existingWorkout.EndDate = workout.EndDate;
 
-            foreach (var set in ex.Sets)
-            {
-                var updatedSet = updatedExerciseSets[set.Id];
-
-                set.Reps = updatedSet.Reps;
-                set.Weight = updatedSet.Weight;
-                set.Completed = updatedSet.Completed;
-            }
-        });
-
+        // Remove exercises that are missing from the payload
         existingWorkout.Exercises = existingWorkout.Exercises
             .IntersectBy(workout.Exercises.Select(q => q.Id), q => q.Id).ToList();
 
@@ -126,6 +112,26 @@ public class WorkoutsService : IWorkoutsService
 
         existingWorkout.Exercises.AddRange(addedExercises);
 
+        existingWorkout.Exercises.ForEach(ex =>
+        {
+            var updatedSets = workout.Exercises.First(q => q.Id == ex.Id).Sets;
+
+            ex.Sets = ex.Sets.IntersectBy(updatedSets.Select(q => q.Id), q => q.Id).ToList();
+
+            foreach (var set in ex.Sets)
+            {
+                var updatedSet = updatedSets.First(q => q.Id == set.Id);
+
+                set.Reps = updatedSet.Reps;
+                set.Weight = updatedSet.Weight;
+                set.Completed = updatedSet.Completed;
+            }
+
+            var addedSets = updatedSets.ExceptBy(ex.Sets.Select(q => q.Id), q => q.Id);
+            
+            ex.Sets.AddRange(addedSets);
+        });
+        
         await _context.SaveChangesAsync();
         return existingWorkout;
     }

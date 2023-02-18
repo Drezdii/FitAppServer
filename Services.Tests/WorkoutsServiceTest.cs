@@ -393,14 +393,83 @@ public class WorkoutsServiceTest : IClassFixture<TestDatabaseFixture>
         // Assert that the first set wasn't updated
         Assert.Equal(200, updatedWorkout.Exercises.First().Sets.First().Weight);
     }
-    
+
+    [Fact]
+    public async void AddOrUpdateWorkout_WorkoutDateUpdates()
+    {
+        await using var context = Fixture.CreateContext();
+        await context.Database.BeginTransactionAsync();
+
+        var service = new WorkoutsService(context, NullLogger<WorkoutsService>.Instance);
+
+        // Prepare updated workout object
+        var workout = CreateWorkoutObject();
+        workout.Id = Constants.WORKOUT_ID;
+        workout.Date = new DateOnly(2030, 2, 2);
+
+        await service.AddOrUpdateWorkoutAsync(workout);
+
+        context.ChangeTracker.Clear();
+
+        var updatedWorkout = await context.Workouts.Include(q => q.Exercises).ThenInclude(q => q.Sets)
+            .SingleAsync(q => q.Id == Constants.WORKOUT_ID);
+
+        Assert.Equal(2030, updatedWorkout.Date?.Year);
+    }
+
+    [Fact]
+    public async void AddOrUpdateWorkout_WorkoutStartDateUpdates()
+    {
+        await using var context = Fixture.CreateContext();
+        await context.Database.BeginTransactionAsync();
+
+        var service = new WorkoutsService(context, NullLogger<WorkoutsService>.Instance);
+
+        // Prepare updated workout object
+        var workout = CreateWorkoutObject();
+        workout.Id = Constants.WORKOUT_ID;
+        workout.StartDate = new DateTime(2023, 1, 1, 8, 0, 0, DateTimeKind.Utc);
+
+        await service.AddOrUpdateWorkoutAsync(workout);
+
+        context.ChangeTracker.Clear();
+
+        var updatedWorkout = await context.Workouts.Include(q => q.Exercises).ThenInclude(q => q.Sets)
+            .SingleAsync(q => q.Id == Constants.WORKOUT_ID);
+
+        Assert.Equal(8, updatedWorkout.StartDate?.Hour);
+    }
+
+    [Fact]
+    public async void AddOrUpdateWorkout_WorkoutEndDateUpdates()
+    {
+        await using var context = Fixture.CreateContext();
+        await context.Database.BeginTransactionAsync();
+
+        var service = new WorkoutsService(context, NullLogger<WorkoutsService>.Instance);
+
+        // Prepare updated workout object
+        var workout = CreateWorkoutObject();
+        workout.Id = Constants.WORKOUT_ID;
+        workout.EndDate = new DateTime(2023, 1, 1, 11, 30, 0, DateTimeKind.Utc);
+
+        await service.AddOrUpdateWorkoutAsync(workout);
+
+        context.ChangeTracker.Clear();
+
+        var updatedWorkout = await context.Workouts.Include(q => q.Exercises).ThenInclude(q => q.Sets)
+            .SingleAsync(q => q.Id == Constants.WORKOUT_ID);
+
+        Assert.Equal(11, updatedWorkout.EndDate?.Hour);
+    }
+
     // TODO: Add tests for AddProgramCycle()
 
     private static Workout CreateWorkoutObject() => new()
     {
-        Date = null,
-        StartDate = null,
-        EndDate = null,
+        Date = Constants.WORKOUT_DATE,
+        StartDate = Constants.WORKOUT_START_DATE,
+        EndDate = Constants.WORKOUT_END_DATE,
         Type = WorkoutTypeCode.None,
         UserId = Constants.USER_ID
     };

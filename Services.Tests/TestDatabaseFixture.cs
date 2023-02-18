@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using FitAppServer.DataAccess;
 using FitAppServer.DataAccess.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -8,7 +9,7 @@ namespace Services.Tests;
 public class TestDatabaseFixture
 {
     private const string ConnectionString =
-        @"Server=postgres;Port=5432;Database=tests;User Id=postgres;Password=root;";
+        @"Server=localhost;Port=5432;Database=tests;User Id=postgres;Password=root;";
 
     private static readonly object Lock = new();
     private static bool _databaseInitialized;
@@ -78,9 +79,9 @@ public class TestDatabaseFixture
                 context.Add(new Workout
                 {
                     Id = Constants.WORKOUT_ID,
-                    Date = null,
-                    StartDate = null,
-                    EndDate = null,
+                    Date = Constants.WORKOUT_DATE,
+                    StartDate = Constants.WORKOUT_START_DATE,
+                    EndDate = Constants.WORKOUT_END_DATE,
                     UserId = Constants.USER_ID,
                     Type = WorkoutTypeCode.None,
                     Exercises = exercises
