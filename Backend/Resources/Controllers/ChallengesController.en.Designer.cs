@@ -38,7 +38,7 @@ namespace Backend.Resources.Controllers {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Backend.Resources.Controllers.ChallengesController.en", typeof(ChallengesController_en).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("FitAppServerREST.Resources.Controllers.ChallengesController.en", typeof(ChallengesController_en).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -65,6 +65,15 @@ namespace Backend.Resources.Controllers {
         internal static string benchTotalWeight2023 {
             get {
                 return ResourceManager.GetString("benchTotalWeight2023", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to In 2023, bench a total weight of 100k kg.
+        /// </summary>
+        internal static string benchTotalWeight2023Description {
+            get {
+                return ResourceManager.GetString("benchTotalWeight2023Description", resourceCulture);
             }
         }
         
@@ -150,11 +159,29 @@ namespace Backend.Resources.Controllers {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to In 2023, do 10,000 pullups.
+        /// </summary>
+        internal static string numberOfPullups2023Description {
+            get {
+                return ResourceManager.GetString("numberOfPullups2023Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Workouts: 2023.
         /// </summary>
         internal static string numOfCreatedWorkoutsChallenge2023 {
             get {
                 return ResourceManager.GetString("numOfCreatedWorkoutsChallenge2023", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to In 2023, go to the gym 200 times.
+        /// </summary>
+        internal static string numOfCreatedWorkoutsChallenge2023Description {
+            get {
+                return ResourceManager.GetString("numOfCreatedWorkoutsChallenge2023Description", resourceCulture);
             }
         }
         
@@ -186,11 +213,29 @@ namespace Backend.Resources.Controllers {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to In 2023, OHP a total weight of 50k kg.
+        /// </summary>
+        internal static string ohpTotalWeight2023Description {
+            get {
+                return ResourceManager.GetString("ohpTotalWeight2023Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Squat: 2023.
         /// </summary>
         internal static string squatTotalWeight2023 {
             get {
                 return ResourceManager.GetString("squatTotalWeight2023", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to In 2023, squat a total weight of 200k kg.
+        /// </summary>
+        internal static string squatTotalWeight2023Description {
+            get {
+                return ResourceManager.GetString("squatTotalWeight2023Description", resourceCulture);
             }
         }
     }

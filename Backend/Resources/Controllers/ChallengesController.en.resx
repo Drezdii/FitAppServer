@@ -63,4 +63,19 @@
     <data name="deadliftThreePlatesChallengeDescription" xml:space="preserve">
         <value>Deadlift three plates on each side</value>
     </data>
+    <data name="benchTotalWeight2023Description" xml:space="preserve">
+        <value>In 2023, bench a total weight of 100k kg</value>
+    </data>
+    <data name="numberOfPullups2023Description" xml:space="preserve">
+        <value>In 2023, do 10,000 pullups</value>
+    </data>
+    <data name="numOfCreatedWorkoutsChallenge2023Description" xml:space="preserve">
+        <value>In 2023, go to the gym 200 times</value>
+    </data>
+    <data name="ohpTotalWeight2023Description" xml:space="preserve">
+        <value>In 2023, OHP a total weight of 50k kg</value>
+    </data>
+    <data name="squatTotalWeight2023Description" xml:space="preserve">
+        <value>In 2023, squat a total weight of 200k kg</value>
+    </data>
 </root>

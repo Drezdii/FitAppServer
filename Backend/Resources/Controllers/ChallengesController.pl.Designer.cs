@@ -38,7 +38,7 @@ namespace Backend.Resources.Controllers {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Backend.Resources.Controllers.ChallengesController.pl", typeof(ChallengesController_pl).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("FitAppServerREST.Resources.Controllers.ChallengesController.pl", typeof(ChallengesController_pl).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -56,6 +56,51 @@ namespace Backend.Resources.Controllers {
             }
             set {
                 resourceCulture = value;
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        internal static string benchTotalWeight2023Description {
+            get {
+                return ResourceManager.GetString("benchTotalWeight2023Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        internal static string numberOfPullups2023Description {
+            get {
+                return ResourceManager.GetString("numberOfPullups2023Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        internal static string numOfCreatedWorkoutsChallenge2023Description {
+            get {
+                return ResourceManager.GetString("numOfCreatedWorkoutsChallenge2023Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        internal static string ohpTotalWeight2023Description {
+            get {
+                return ResourceManager.GetString("ohpTotalWeight2023Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        internal static string squatTotalWeight2023Description {
+            get {
+                return ResourceManager.GetString("squatTotalWeight2023Description", resourceCulture);
             }
         }
     }
