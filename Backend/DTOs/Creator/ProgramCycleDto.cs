@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace FitAppServerREST.DTOs.Creator;
+namespace Backend.DTOs.Creator;
 
 public class ProgramCycleDto
 {

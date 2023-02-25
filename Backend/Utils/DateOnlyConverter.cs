@@ -3,7 +3,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 
-namespace FitAppServerREST.Utils;
+namespace Backend.Utils;
 
 public partial class DateOnlyConverter : JsonConverter<DateOnly>
 {

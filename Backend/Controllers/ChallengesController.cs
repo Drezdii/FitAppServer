@@ -1,14 +1,13 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 using FitAppServer.Services.Services;
-using FitAppServerREST.DTOs.Challenges;
-using FitAppServerREST.Mappings;
+using Backend.DTOs.Challenges;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
 
-namespace FitAppServerREST.Controllers;
+namespace Backend.Controllers;
 
 [ApiController]
 [Route("challenges")]

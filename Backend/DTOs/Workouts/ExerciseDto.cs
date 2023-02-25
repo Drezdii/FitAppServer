@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using FitAppServer.DataAccess.Entities;
 
-namespace FitAppServerREST.DTOs.Workouts;
+namespace Backend.DTOs.Workouts;
 
 public class ExerciseDto
 {

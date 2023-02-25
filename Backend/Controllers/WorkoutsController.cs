@@ -4,14 +4,14 @@ using System.Threading.Tasks;
 using FitAppServer.DataAccess.Entities;
 using FitAppServer.Services.Models;
 using FitAppServer.Services.Services;
-using FitAppServerREST.DTOs.Creator;
-using FitAppServerREST.DTOs.Workouts;
-using FitAppServerREST.Mappings;
+using Backend.DTOs.Creator;
+using Backend.DTOs.Workouts;
+using Backend.Mappings;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
-namespace FitAppServerREST.Controllers;
+namespace Backend.Controllers;
 
 [ApiController]
 [Route("workouts")]

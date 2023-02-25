@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using FitAppServer.DataAccess.Entities;
-using FitAppServerREST.DTOs.Creator;
+using Backend.DTOs.Creator;
 
-namespace FitAppServerREST.DTOs.Workouts;
+namespace Backend.DTOs.Workouts;
 
 public class WorkoutDto
 {

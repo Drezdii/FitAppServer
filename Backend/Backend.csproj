@@ -5,7 +5,7 @@
         <Nullable>enable</Nullable>
         <ImplicitUsings>disable</ImplicitUsings>
         <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
-        <RootNamespace>FitAppServerREST</RootNamespace>
+        <RootNamespace>Backend</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>

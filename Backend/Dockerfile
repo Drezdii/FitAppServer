@@ -5,18 +5,18 @@ EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 WORKDIR /src
-COPY ["FitAppServerREST/FitAppServerREST.csproj", "FitAppServerREST/"]
+COPY ["Backend/Backend.csproj", "Backend/"]
 COPY ["FitAppServer.Services/FitAppServer.Services.csproj", "FitAppServer.Services/"]
 COPY ["FitAppServer.DataAccess/FitAppServer.DataAccess.csproj", "FitAppServer.DataAccess/"]
-RUN dotnet restore "FitAppServerREST/FitAppServerREST.csproj"
+RUN dotnet restore "Backend/Backend.csproj"
 COPY . .
-WORKDIR "/src/FitAppServerREST"
-RUN dotnet build "FitAppServerREST.csproj" -c Release -o /app/build
+WORKDIR "/src/Backend"
+RUN dotnet build "Backend.csproj" -c Release -o /app/build
 
 FROM build AS publish
-RUN dotnet publish "FitAppServerREST.csproj" -c Release -o /app/publish
+RUN dotnet publish "Backend.csproj" -c Release -o /app/publish
 
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "FitAppServerREST.dll"]
+ENTRYPOINT ["dotnet", "Backend.dll"]
