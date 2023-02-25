@@ -1,4 +1,4 @@
-﻿namespace FitAppServerREST.DTOs.Creator;
+﻿namespace Backend.DTOs.Creator;
 
 public class NewSetDto
 {

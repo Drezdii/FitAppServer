@@ -1,8 +1,8 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Text.Json.Serialization;
+using Backend.Utils;
 using FitAppServer.DataAccess;
 using FitAppServer.Services.Services;
-using FitAppServerREST.Utils;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.HttpOverrides;

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using FitAppServer.DataAccess.Entities;
 
-namespace FitAppServerREST.DTOs.Creator;
+namespace Backend.DTOs.Creator;
 
 public class NewWorkoutDto
 {

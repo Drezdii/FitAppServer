@@ -7,7 +7,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace FitAppServerREST.Resources.Controllers {
+namespace Backend.Resources.Controllers {
     using System;
     
     

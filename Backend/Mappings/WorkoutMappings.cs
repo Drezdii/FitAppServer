@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using FitAppServer.DataAccess.Entities;
-using FitAppServerREST.DTOs.Creator;
-using FitAppServerREST.DTOs.Workouts;
+using Backend.DTOs.Creator;
+using Backend.DTOs.Workouts;
 
-namespace FitAppServerREST.Mappings;
+namespace Backend.Mappings;
 
 public static class WorkoutMappings
 {

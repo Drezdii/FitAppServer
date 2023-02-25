@@ -1,4 +1,4 @@
-﻿namespace FitAppServerREST.DTOs.Workouts;
+﻿namespace Backend.DTOs.Workouts;
 
 public class SetDto
 {
