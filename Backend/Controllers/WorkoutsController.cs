@@ -61,8 +61,6 @@ public class WorkoutsController : ControllerBase
     [Authorize]
     public async Task<IActionResult> AddOrUpdateWorkout(WorkoutDto workout)
     {
-        // Compare userid to Token userid here
-        // if userid == userid from token => continue
         var claimsUserId = User.Claims.Single(q => q.Type == "user_id").Value;
 
         var wrk = workout.ToModel();
@@ -97,7 +95,7 @@ public class WorkoutsController : ControllerBase
 
 
         var res = await _workoutsService.AddOrUpdateWorkoutAsync(wrk);
-        
+
         // Update challenges only for finished workouts
         if (res.StartDate is not null && res.EndDate is not null)
         {

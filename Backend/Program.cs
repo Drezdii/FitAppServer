@@ -39,8 +39,8 @@ builder.Services.AddScoped<IAchievementsService, AchievementsService>();
 builder.Services.AddScoped<IChallengesManager, ChallengesManager>();
 builder.Services.AddScoped<IChallengesService, ChallengesService>();
 builder.Services.AddScoped<IUsersService, UsersService>();
+builder.Services.AddScoped<IStatsService, StatsService>();
 
-// Check if this actually works
 if (builder.Configuration.GetConnectionString("postgres") != null)
 {
     builder.Services.AddDbContext<FitAppContext>(options =>
@@ -71,6 +71,7 @@ builder.Services.Configure<ForwardedHeadersOptions>(options =>
 var app = builder.Build();
 
 var supportedCultures = new[] {"en-US", "pl"};
+
 var localizationOptions = new RequestLocalizationOptions().SetDefaultCulture(supportedCultures[0])
     .AddSupportedCultures(supportedCultures)
     .AddSupportedUICultures(supportedCultures);
