@@ -40,6 +40,8 @@ public class WorkoutsService : IWorkoutsService
             .Include(q => q.Exercises)
             .ThenInclude(q => q.Sets)
             .Include(q => q.User)
+            .Include(q => q.WorkoutProgramDetails)
+            .ThenInclude(q => q!.Program)
             .AsNoTrackingWithIdentityResolution()
             .AsSplitQuery()
             .SingleOrDefaultAsync();
@@ -50,15 +52,25 @@ public class WorkoutsService : IWorkoutsService
     public async Task<Workout> AddOrUpdateWorkoutAsync(Workout workout)
     {
         // Clear any IDs that might have been posted
-        if (workout.Id < 0) workout.Id = 0;
+        if (workout.Id < 0)
+        {
+            workout.Id = 0;
+        }
 
         foreach (var ex in workout.Exercises)
         {
             foreach (var set in ex.Sets)
+            {
                 if (set.Id < 0)
+                {
                     set.Id = 0;
+                }
+            }
 
-            if (ex.Id < 0) ex.Id = 0;
+            if (ex.Id < 0)
+            {
+                ex.Id = 0;
+            }
         }
 
         // Check if this is a new workout
@@ -95,6 +107,8 @@ public class WorkoutsService : IWorkoutsService
         // Get sets that are missing from the payload
         var missingSets = allExistingSets.Where(q => !setsIds.Contains(q.Id)).ToList();
         _context.Sets.RemoveRange(missingSets);
+
+        await _context.Entry(workout).Reference(q => q.WorkoutProgramDetails).LoadAsync();
 
         await _context.SaveChangesAsync();
         return workout;
