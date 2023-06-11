@@ -86,13 +86,18 @@ public class WorkoutsService : IWorkoutsService
         // Begin tracking the workout
         _context.Update(workout);
 
+        var programDetails = _context.Entry(workout).Reference(q => q.WorkoutProgramDetails).LoadAsync();
+
         // Remove all exercises and sets that are missing from the payload
         // Get all IDs from the payload before Entity Framework populates it when searching for all existing exercises
         var exIds = workout.Exercises.Select(q => q.Id).ToList();
 
         var setsIds = new List<int>();
 
-        foreach (var ex in workout.Exercises) setsIds.AddRange(ex.Sets.Select(q => q.Id).ToList());
+        foreach (var ex in workout.Exercises)
+        {
+            setsIds.AddRange(ex.Sets.Select(q => q.Id).ToList());
+        }
 
         // Load all exercises in this workout at once
         var allExistingExercises = await _context.Exercises.Where(q => q.Workout.Id == workout.Id)
@@ -108,7 +113,7 @@ public class WorkoutsService : IWorkoutsService
         var missingSets = allExistingSets.Where(q => !setsIds.Contains(q.Id)).ToList();
         _context.Sets.RemoveRange(missingSets);
 
-        await _context.Entry(workout).Reference(q => q.WorkoutProgramDetails).LoadAsync();
+        await programDetails;
 
         await _context.SaveChangesAsync();
         return workout;

@@ -19,7 +19,7 @@ public class FitAppContext : DbContext
     public DbSet<WorkoutProgramDetail> WorkoutProgramDetails { get; set; } = null!;
     public DbSet<Challenge> Challenges { get; set; } = null!;
     public DbSet<ChallengeEntry> ChallengeEntries { get; set; } = null!;
-    public DbSet<BodyWeight> BodyWeights { get; set; } = null!;
+    public DbSet<BodyWeightEntry> BodyWeightEntries { get; set; } = null!;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
