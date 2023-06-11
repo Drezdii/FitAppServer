@@ -5,6 +5,7 @@ using FitAppServer.DataAccess.Entities;
 using FitAppServer.Services.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 namespace Backend.Controllers;
 
@@ -14,11 +15,13 @@ public class StatsController : ControllerBase
 {
     private readonly IStatsService _statsService;
     private readonly IUsersService _usersService;
+    private readonly ILogger<StatsController> _logger;
 
-    public StatsController(IStatsService statsService, IUsersService usersService)
+    public StatsController(IStatsService statsService, IUsersService usersService, ILogger<StatsController> logger)
     {
         _statsService = statsService;
         _usersService = usersService;
+        _logger = logger;
     }
 
     [HttpGet("bodyweight/{userid}")]
@@ -36,17 +39,23 @@ public class StatsController : ControllerBase
 
         if (userid != claimsUserId)
         {
+            _logger.LogError("{} was trying to access {} user's bodyweight", claimsUserId, userid);
             return Forbid();
         }
 
-        var res = await _statsService.GetLatestBodyWeight(userid);
+        var res = await _statsService.GetLatestBodyWeightEntry(userid);
 
-        return Ok(new BodyWeightDto(res.Date, res.Weight));
+        if (res == null)
+        {
+            return Ok(null);
+        }
+
+        return Ok(new BodyWeightEntryDto(res.Id, res.Date, res.Weight));
     }
 
     [HttpPost("bodyweight")]
     [Authorize]
-    public async Task<IActionResult> AddBodyWeight(BodyWeightDto entry)
+    public async Task<IActionResult> AddBodyWeightEntry(BodyWeightEntryDto entry)
     {
         var claimsUserId = User.Claims.Single(q => q.Type == "user_id").Value;
 
@@ -57,12 +66,13 @@ public class StatsController : ControllerBase
             return BadRequest();
         }
 
-        var res = await _statsService.AddBodyWeightEntry(new BodyWeight
+        var res = await _statsService.AddBodyWeightEntry(new BodyWeightEntry
         {
             Date = entry.Date,
-            Weight = entry.Weight
+            Weight = entry.Weight,
+            UserId = user.Id
         });
 
-        return Ok(entry);
+        return Ok(new BodyWeightEntryDto(res.Id, res.Date, res.Weight));
     }
 }

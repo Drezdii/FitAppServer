@@ -6,6 +6,7 @@
         <entry key="Common:966f1286-d883-4317-917e-341cb3134234:dbContext" value="FitAppServer.DataAccess.FitAppContext" />
         <entry key="Common:buildConfiguration" value="Debug" />
         <entry key="Common:noBuild" value="false" />
+        <entry key="Common:outputFolder" value="Migrations" />
         <entry key="Common:targetFramework" value="net7.0" />
         <entry key="Common:useDefaultConnection" value="true" />
       </map>
