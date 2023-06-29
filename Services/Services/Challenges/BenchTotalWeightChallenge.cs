@@ -48,7 +48,7 @@ public class BenchTotalWeightChallenge : IChallenge
             DescriptionTranslationKey = "benchTotalWeight2022Description",
             StartDate = new DateTime(2023, 1, 1, 0, 0, 0),
             EndDate = new DateTime(2023, 12, 31, 23, 59, 59),
-            Goal = 100000f,
+            Goal = 300000f,
             Unit = "kg"
         };
     }

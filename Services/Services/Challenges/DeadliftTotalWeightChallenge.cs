@@ -41,7 +41,7 @@ public class DeadliftTotalWeightChallenge : IChallenge
             DescriptionTranslationKey = "deadliftTotalWeight2022Description",
             StartDate = new DateTime(2023, 1, 1, 0, 0, 0),
             EndDate = new DateTime(2023, 12, 31, 23, 59, 59),
-            Goal = 300000f,
+            Goal = 500000f,
             Unit = "kg"
         };
     }

@@ -41,7 +41,7 @@ public class OhpTotalWeightChallenge : IChallenge
             DescriptionTranslationKey = "ohpTotalWeight2022Description",
             StartDate = new DateTime(2023, 1, 1, 0, 0, 0),
             EndDate = new DateTime(2023, 12, 31, 23, 59, 59),
-            Goal = 50000f,
+            Goal = 200000f,
             Unit = "kg"
         };
     }
