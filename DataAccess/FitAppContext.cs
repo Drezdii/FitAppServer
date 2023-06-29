@@ -42,5 +42,10 @@ public class FitAppContext : DbContext
             .HasMany(e => e.Sets)
             .WithOne(s => s.Exercise)
             .IsRequired();
+
+        modelBuilder.Entity<Workout>()
+            .HasOne(q => q.BodyWeightEntry)
+            .WithMany(q => q.Workout)
+            .OnDelete(DeleteBehavior.SetNull);
     }
 }

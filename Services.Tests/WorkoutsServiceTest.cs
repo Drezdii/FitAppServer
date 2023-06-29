@@ -105,13 +105,16 @@ public class WorkoutsServiceTest : IClassFixture<TestDatabaseFixture>
         var workout = CreateWorkoutObject();
 
         workout.User = await context.Users.SingleAsync(q => q.Id == Constants.USER_ID);
-        workout.Date = new DateOnly(2023, 2, 5);
+
+        var workoutsDate = DateOnly.FromDateTime(DateTime.Today);
+
+        workout.Date = workoutsDate;
 
         await service.AddOrUpdateWorkoutAsync(workout);
 
         context.ChangeTracker.Clear();
 
-        Assert.NotNull(await context.Workouts.SingleOrDefaultAsync(q => q.Date == new DateOnly(2023, 2, 5)));
+        Assert.NotNull(await context.Workouts.SingleOrDefaultAsync(q => q.Date == workoutsDate));
     }
 
     [Fact]
@@ -393,7 +396,7 @@ public class WorkoutsServiceTest : IClassFixture<TestDatabaseFixture>
         // Assert that the first set wasn't updated
         Assert.Equal(200, updatedWorkout.Exercises.First().Sets.First().Weight);
     }
-    
+
     // TODO: Add tests for AddProgramCycle()
 
     private static Workout CreateWorkoutObject() => new()

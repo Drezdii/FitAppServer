@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using FitAppServer.DataAccess;
@@ -71,6 +72,24 @@ public class WorkoutsService : IWorkoutsService
             {
                 ex.Id = 0;
             }
+        }
+
+        // Match workout to the body weight entry closest to the workout's date
+        // Only do this for finished workouts
+        if (workout is {Date: not null, EndDate: not null})
+        {
+            var closestBwEntry = await _context.BodyWeightEntries
+                .Where(q => q.User.Uuid == workout.User.Uuid)
+                .OrderBy(q =>
+                    Math.Abs(
+                        (q.Date.ToDateTime(TimeOnly.MinValue) - workout.Date.Value.ToDateTime(TimeOnly.MinValue))
+                        .TotalMilliseconds
+                    )
+                )
+                .ThenByDescending(q => q.Id)
+                .FirstOrDefaultAsync();
+
+            workout.BodyWeightEntry = closestBwEntry;
         }
 
         // Check if this is a new workout
