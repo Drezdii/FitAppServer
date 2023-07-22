@@ -89,4 +89,38 @@ public class ChallengesController : ControllerBase
 
         return Ok(translatedChallenges);
     }
+
+    [HttpGet]
+    [Route("{userId}/top3")]
+    [Authorize]
+    // Get the three challenges closest to being finished
+    public async Task<IActionResult> GetTop3ChallengesByUserId(string userid)
+    {
+        var claimsUserId = User.Claims.Single(q => q.Type == "user_id").Value;
+
+        var user = await _usersService.GetUserAsync(claimsUserId);
+
+        if (user == null)
+        {
+            return BadRequest();
+        }
+
+        if (userid != claimsUserId)
+        {
+            return Forbid();
+        }
+
+        var challenges = await _challengesService.GetTop3Challenges(userid);
+
+        var translatedChallenges = challenges.Select(entry =>
+        {
+            var challenge = new TranslatedChallengeDto(_localizer[entry.Challenge.NameTranslationKey],
+                _localizer[entry.Challenge.DescriptionTranslationKey ?? ""], entry.Challenge.StartDate,
+                entry.Challenge.EndDate, entry.Challenge.Goal, entry.Challenge.Unit);
+
+            return new ChallengeEntryDto(entry.Value, entry.ChallengeId, entry.CompletedAt, challenge);
+        }).ToList();
+
+        return Ok(translatedChallenges);
+    }
 }

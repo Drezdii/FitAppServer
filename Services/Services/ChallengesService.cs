@@ -35,4 +35,12 @@ public class ChallengesService : IChallengesService
         return await _context.ChallengeEntries.Where(q => q.User.Uuid == userid).Include(q => q.Challenge)
             .ToListAsync();
     }
+
+    public async Task<ICollection<ChallengeEntry>> GetTop3Challenges(string userid)
+    {
+        return await _context.ChallengeEntries
+            .Where(q => q.User.Uuid == userid && q.CompletedAt == null)
+            .Include(q => q.Challenge)
+            .OrderByDescending(q => q.Value / q.Challenge.Goal).Take(3).ToListAsync();
+    }
 }
