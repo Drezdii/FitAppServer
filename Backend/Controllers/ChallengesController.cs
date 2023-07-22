@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using FitAppServer.Services.Services;
 using Backend.DTOs.Challenges;
+using FitAppServer.DataAccess.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Localization;
@@ -47,7 +48,13 @@ public class ChallengesController : ControllerBase
         }
 
         var maxes = await _challengesService.GetOneRepMaxesByUserId(userid);
-        return Ok(maxes);
+
+        return Ok(maxes.Select(max => new
+        {
+            ExerciseType = (WorkoutTypeCode) max.ExerciseInfoId,
+            max.Value,
+            max.Set.Exercise.Workout.Date
+        }));
     }
 
     [HttpGet]

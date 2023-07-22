@@ -22,6 +22,9 @@ public class ChallengesService : IChallengesService
         return await _context.OneRepMaxes
             .Where(q => q.User.Uuid == userId)
             .Include(q => q.ExerciseInfo)
+            .Include(q => q.Set)
+            .ThenInclude(q => q.Exercise)
+            .ThenInclude(q => q.Workout)
             .GroupBy(p => p.ExerciseInfo.Id)
             .Select(q => q.OrderByDescending(p => p.Id).First())
             .ToListAsync();
@@ -29,6 +32,7 @@ public class ChallengesService : IChallengesService
 
     public async Task<ICollection<ChallengeEntry>> GetChallengesEntriesByUserId(string userid)
     {
-        return await _context.ChallengeEntries.Where(q => q.User.Uuid == userid).Include(q => q.Challenge).ToListAsync();
+        return await _context.ChallengeEntries.Where(q => q.User.Uuid == userid).Include(q => q.Challenge)
+            .ToListAsync();
     }
 }
