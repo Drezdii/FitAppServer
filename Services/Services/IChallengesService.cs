@@ -8,4 +8,5 @@ public interface IChallengesService
 {
     Task<ICollection<OneRepMax>> GetOneRepMaxesByUserId(string userid);
     Task<ICollection<ChallengeEntry>> GetChallengesEntriesByUserId(string userid);
+    Task<ICollection<ChallengeEntry>> GetTop3Challenges(string userid);
 }
