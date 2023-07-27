@@ -79,13 +79,14 @@ public class ChallengesController : ControllerBase
         var challenges = await _challengesService.GetChallengesEntriesByUserId(userid);
 
         var translatedChallenges = challenges.Select(entry =>
-        {
-            var challenge = new TranslatedChallengeDto(_localizer[entry.Challenge.NameTranslationKey],
-                _localizer[entry.Challenge.DescriptionTranslationKey ?? ""], entry.Challenge.StartDate,
-                entry.Challenge.EndDate, entry.Challenge.Goal, entry.Challenge.Unit);
+            {
+                var challenge = new TranslatedChallengeDto(_localizer[entry.Challenge.NameTranslationKey],
+                    _localizer[entry.Challenge.DescriptionTranslationKey ?? ""], entry.Challenge.StartDate,
+                    entry.Challenge.EndDate, entry.Challenge.Goal, entry.Challenge.Unit);
 
-            return new ChallengeEntryDto(entry.Value, entry.ChallengeId, entry.CompletedAt, challenge);
-        }).ToList();
+                return new ChallengeEntryDto(entry.Value, entry.ChallengeId, entry.CompletedAt, challenge);
+            })
+            .ToList();
 
         return Ok(translatedChallenges);
     }
@@ -122,5 +123,27 @@ public class ChallengesController : ControllerBase
         }).ToList();
 
         return Ok(translatedChallenges);
+    }
+
+    [HttpGet]
+    [Route("{userid}/alltime")]
+    [Authorize]
+    public async Task<IActionResult> GetAllTimeStats(string userid)
+    {
+        var claimsUserId = User.Claims.Single(q => q.Type == "user_id").Value;
+
+        var user = await _usersService.GetUserAsync(claimsUserId);
+
+        if (user == null)
+        {
+            return BadRequest();
+        }
+
+        if (userid != claimsUserId)
+        {
+            return Forbid();
+        }
+
+        return Ok(await _challengesService.GetAllTimeStats(userid));
     }
 }
