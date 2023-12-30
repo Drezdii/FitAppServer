@@ -6,8 +6,8 @@ EXPOSE 443
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 WORKDIR /src
 COPY ["Backend/Backend.csproj", "Backend/"]
-COPY ["FitAppServer.Services/FitAppServer.Services.csproj", "FitAppServer.Services/"]
-COPY ["FitAppServer.DataAccess/FitAppServer.DataAccess.csproj", "FitAppServer.DataAccess/"]
+COPY ["Services/Services.csproj", "Services/"]
+COPY ["DataAccess/DataAccess.csproj", "DataAccess/"]
 RUN dotnet restore "Backend/Backend.csproj"
 COPY . .
 WORKDIR "/src/Backend"
