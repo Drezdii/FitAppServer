@@ -17,4 +17,6 @@ public class Workout
     public User User { get; set; } = null!;
     public int UserId { get; set; }
     public WorkoutProgramDetail? WorkoutProgramDetails { get; set; }
+    public BodyWeightEntry? BodyWeightEntry { get; set; }
+    public int? BodyWeightEntryId { get; set; }
 }

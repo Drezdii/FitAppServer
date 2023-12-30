@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using FitAppServer.DataAccess;
@@ -11,18 +12,20 @@ namespace FitAppServer.Services.Services;
 public class StatsService : IStatsService
 {
     private readonly FitAppContext _context;
+    private readonly ILogger<StatsService> _logger;
 
-    public StatsService(FitAppContext context)
+    public StatsService(FitAppContext context, ILogger<StatsService> logger)
     {
         _context = context;
+        _logger = logger;
     }
 
     public Task<BodyWeightEntry?> GetLatestBodyWeightEntry(string userId)
     {
         return _context.BodyWeightEntries
+            .Where(q => q.User.Uuid == userId)
             .OrderByDescending(q => q.Date)
             .ThenByDescending(q => q.Id)
-            .Where(q => q.User.Uuid == userId)
             .FirstOrDefaultAsync();
     }
 

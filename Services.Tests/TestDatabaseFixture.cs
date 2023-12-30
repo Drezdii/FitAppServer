@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using FitAppServer.DataAccess;
 using FitAppServer.DataAccess.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -37,7 +38,9 @@ public class TestDatabaseFixture
 
                 context.Add(new User
                 {
-                    Id = Constants.USER_ID, Email = Constants.USER_EMAIL, Username = Constants.USER_USERNAME,
+                    Id = Constants.USER_ID,
+                    Email = Constants.USER_EMAIL,
+                    Username = Constants.USER_USERNAME,
                     Uuid = Constants.USER_UUID
                 });
 
@@ -85,6 +88,24 @@ public class TestDatabaseFixture
                     Type = WorkoutTypeCode.None,
                     Exercises = exercises
                 });
+
+                context.AddRange(new BodyWeightEntry
+                    {
+                        Date = DateOnly.FromDateTime(DateTime.Today.AddDays(-1)),
+                        UserId = Constants.USER_ID,
+                        Weight = 110f
+                    }, new BodyWeightEntry
+                    {
+                        Date = DateOnly.FromDateTime(DateTime.Today),
+                        UserId = Constants.USER_ID,
+                        Weight = 100f
+                    },
+                    new BodyWeightEntry
+                    {
+                        Date = DateOnly.FromDateTime(DateTime.Today.AddDays(1)),
+                        UserId = Constants.USER_ID,
+                        Weight = 90f
+                    });
 
 
                 context.SaveChanges();
