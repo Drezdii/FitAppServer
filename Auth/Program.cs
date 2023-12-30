@@ -30,7 +30,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
     {
         ValidateIssuer = true,
         ValidateAudience = true,
-        ValidateLifetime = true,firebase_private_key.json
+        ValidateLifetime = true,
         ValidIssuer = "https://securetoken.google.com/fitapp-68345",
         ValidAudience = "fitapp-68345"
     };
