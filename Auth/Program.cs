@@ -20,7 +20,7 @@ builder.Services.AddTransient<IWorkoutsService, WorkoutsService>();
 
 FirebaseApp.Create(new AppOptions
 {
-    Credential = GoogleCredential.FromFile("firebase_private_key.json")
+    Credential = GoogleCredential.FromFile("./firebase_private_key.json")
 });
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
